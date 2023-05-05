@@ -1,0 +1,19 @@
+global int a = 42;
+
+int foo(int a) {
+    printInt(a);
+}
+
+int bar() {
+    int a = 56;
+    return a + b + foo(a);
+}
+
+global int b;
+
+int main() {
+    int a;
+    int b;
+    bar();
+    return 0;
+}

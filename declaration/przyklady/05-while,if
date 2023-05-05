@@ -1,0 +1,11 @@
+int main() {
+    while (false) {
+        if (true)
+            if (false) {
+                printString("hello");
+            }
+            else // {} is optional
+                printString("world");
+    }
+    return 0;
+}

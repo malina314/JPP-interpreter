@@ -1,0 +1,29 @@
+Język imperatywny
+
+Składnia jest wzorowana na składni Latte.
+
+W języku są typy int, bool, string. Nie ma konwersji pomiedzy typami. Typy mają wartości domyślne (0 dla int, "" dla string, false dla bool).
+
+Program jest listą definicji funkcji. Na definicję funkcji składa się typ zwracanej wartości, nazwa, lista argumentów oraz ciało. Funkcje muszą mieć unikalne nazwy. W programie musi wystąpić funkcja o nazwie main zwracająca int i nie przyjmująca argumentów (od niej zaczyna się wykonanie programu). Jeżeli funkcja nie ma instrukcji return zwracana jest wartość domyślna.
+
+Funkcje mogą być wzajemnie rekurencyjne, co za tym idzie mogą być definiowane w dowolnej kolejności (użycie funkcji może występować przed jej definicją).
+
+Zmienne globalne są widoczne wszędzie, w szczególności mogą być użyte w funkcji zdefiniowanej przed deklaracją zmiennej globalnej. Inicjowanie zmiennej globalnej wartością wyrażenia, w którym następuje wywołanie funkcji, która korzysta z tej zmiennej to UB.
+
+Funkcje i zmienne globalne muszą mieć unikalne nazwy.
+
+Jeśli zmienna nie jest jawnie inicjalizowana w momencie deklaracji, jest inicjalizowana wartością domyślną.
+
+Deklaracje zmiennych lokalnych mogą występować w dowolnym miejscu bloku, jednak każda zmienna musi być zadeklarowana przed użyciem.
+
+Zmienne zadeklarowane w bloku nie są widoczne poza nim i przesłaniają zmienne o tej samej nazwie spoza bloku. Redeklaracja zmiennej w bloku przesłania poprzednią.
+
+Parametry funkcji są przekazywane przez wartość lub przez zmienną.
+
+Są dostępne predefiniowane funkcje:
+int printInt(int)
+int printString(string)
+int printBool(bool)
+
+Konflikty
+Gramatyka zawiera jeden konflikt typu shift-reduce związany z instrukcją if-else. W przypadku konfliktu parser wykonuje shift, co oznacza, że else łączy się z najbliższym if.
