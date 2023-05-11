@@ -44,8 +44,8 @@ run p s =
       putStrLn "\nParse Successful!" -- todo: remove
       case checkTypes tree of
         Left err -> putStrLn err
-        Right _ -> do
-          putStrLn "Type checking successful!" -- todo: remove
+        Right r -> do
+          putStrLn $ "Type checking successful!" ++ show r -- todo: remove
           eval tree
   where
   ts = myLexer s

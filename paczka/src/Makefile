@@ -18,7 +18,7 @@ all : Interpreter
 
 # Rules for building the parser.
 
-AbsGramatyka.hs LexGramatyka.x ParGramatyka.y PrintGramatyka.hs TestGramatyka.hs Interpreter.hs: ../gramatyka.cf
+AbsGramatyka.hs LexGramatyka.x ParGramatyka.y PrintGramatyka.hs TestGramatyka.hs: ../gramatyka.cf
 	bnfc --haskell ../gramatyka.cf
 
 %.hs : %.y
@@ -30,7 +30,7 @@ AbsGramatyka.hs LexGramatyka.x ParGramatyka.y PrintGramatyka.hs TestGramatyka.hs
 TestGramatyka : AbsGramatyka.hs LexGramatyka.hs ParGramatyka.hs PrintGramatyka.hs TestGramatyka.hs
 	${GHC} ${GHC_OPTS} $@
 
-Interpreter : AbsGramatyka.hs LexGramatyka.hs ParGramatyka.hs PrintGramatyka.hs Interpreter.hs
+Interpreter : AbsGramatyka.hs LexGramatyka.hs ParGramatyka.hs PrintGramatyka.hs Interpreter.hs TypeChecker.hs Eval.hs
 	${GHC} ${GHC_OPTS} $@
 
 # Rules for cleaning generated files.
