@@ -140,99 +140,98 @@ instance Print Double where
 
 instance Print AbsGramatyka.Ident where
   prt _ (AbsGramatyka.Ident i) = doc $ showString i
-instance Print (AbsGramatyka.Program' a) where
+instance Print AbsGramatyka.Program where
   prt i = \case
-    AbsGramatyka.Program _ topdefs -> prPrec i 0 (concatD [prt 0 topdefs])
+    AbsGramatyka.Program topdefs -> prPrec i 0 (concatD [prt 0 topdefs])
 
-instance Print (AbsGramatyka.TopDef' a) where
+instance Print AbsGramatyka.TopDef where
   prt i = \case
-    AbsGramatyka.VarDef _ type_ item -> prPrec i 0 (concatD [doc (showString "global"), prt 0 type_, prt 0 item, doc (showString ";")])
-    AbsGramatyka.FnDef _ type_ id_ args block -> prPrec i 0 (concatD [prt 0 type_, prt 0 id_, doc (showString "("), prt 0 args, doc (showString ")"), prt 0 block])
+    AbsGramatyka.VarDef type_ item -> prPrec i 0 (concatD [doc (showString "global"), prt 0 type_, prt 0 item, doc (showString ";")])
+    AbsGramatyka.FnDef type_ id_ args block -> prPrec i 0 (concatD [prt 0 type_, prt 0 id_, doc (showString "("), prt 0 args, doc (showString ")"), prt 0 block])
 
-instance Print [AbsGramatyka.TopDef' a] where
+instance Print [AbsGramatyka.TopDef] where
   prt _ [] = concatD []
   prt _ [x] = concatD [prt 0 x]
   prt _ (x:xs) = concatD [prt 0 x, prt 0 xs]
 
-instance Print (AbsGramatyka.Arg' a) where
+instance Print AbsGramatyka.Arg where
   prt i = \case
-    AbsGramatyka.Arg _ type_ id_ -> prPrec i 0 (concatD [prt 0 type_, prt 0 id_])
-    AbsGramatyka.ArgVar _ type_ id_ -> prPrec i 0 (concatD [doc (showString "var"), prt 0 type_, prt 0 id_])
+    AbsGramatyka.Arg type_ id_ -> prPrec i 0 (concatD [prt 0 type_, prt 0 id_])
+    AbsGramatyka.ArgVar type_ id_ -> prPrec i 0 (concatD [doc (showString "var"), prt 0 type_, prt 0 id_])
 
-instance Print [AbsGramatyka.Arg' a] where
+instance Print [AbsGramatyka.Arg] where
   prt _ [] = concatD []
   prt _ [x] = concatD [prt 0 x]
   prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
 
-instance Print (AbsGramatyka.Block' a) where
+instance Print AbsGramatyka.Block where
   prt i = \case
-    AbsGramatyka.Block _ stmts -> prPrec i 0 (concatD [doc (showString "{"), prt 0 stmts, doc (showString "}")])
+    AbsGramatyka.Block stmts -> prPrec i 0 (concatD [doc (showString "{"), prt 0 stmts, doc (showString "}")])
 
-instance Print [AbsGramatyka.Stmt' a] where
+instance Print [AbsGramatyka.Stmt] where
   prt _ [] = concatD []
   prt _ (x:xs) = concatD [prt 0 x, prt 0 xs]
 
-instance Print (AbsGramatyka.Stmt' a) where
+instance Print AbsGramatyka.Stmt where
   prt i = \case
-    AbsGramatyka.Empty _ -> prPrec i 0 (concatD [doc (showString ";")])
-    AbsGramatyka.BStmt _ block -> prPrec i 0 (concatD [prt 0 block])
-    AbsGramatyka.Decl _ type_ item -> prPrec i 0 (concatD [prt 0 type_, prt 0 item, doc (showString ";")])
-    AbsGramatyka.Ass _ id_ expr -> prPrec i 0 (concatD [prt 0 id_, doc (showString "="), prt 0 expr, doc (showString ";")])
-    AbsGramatyka.Ret _ expr -> prPrec i 0 (concatD [doc (showString "return"), prt 0 expr, doc (showString ";")])
-    AbsGramatyka.VRet _ -> prPrec i 0 (concatD [doc (showString "return"), doc (showString ";")])
-    AbsGramatyka.Cond _ expr stmt -> prPrec i 0 (concatD [doc (showString "if"), doc (showString "("), prt 0 expr, doc (showString ")"), prt 0 stmt])
-    AbsGramatyka.CondElse _ expr stmt1 stmt2 -> prPrec i 0 (concatD [doc (showString "if"), doc (showString "("), prt 0 expr, doc (showString ")"), prt 0 stmt1, doc (showString "else"), prt 0 stmt2])
-    AbsGramatyka.While _ expr stmt -> prPrec i 0 (concatD [doc (showString "while"), doc (showString "("), prt 0 expr, doc (showString ")"), prt 0 stmt])
-    AbsGramatyka.SExp _ expr -> prPrec i 0 (concatD [prt 0 expr, doc (showString ";")])
+    AbsGramatyka.Empty -> prPrec i 0 (concatD [doc (showString ";")])
+    AbsGramatyka.BStmt block -> prPrec i 0 (concatD [prt 0 block])
+    AbsGramatyka.Decl type_ item -> prPrec i 0 (concatD [prt 0 type_, prt 0 item, doc (showString ";")])
+    AbsGramatyka.Ass id_ expr -> prPrec i 0 (concatD [prt 0 id_, doc (showString "="), prt 0 expr, doc (showString ";")])
+    AbsGramatyka.Ret expr -> prPrec i 0 (concatD [doc (showString "return"), prt 0 expr, doc (showString ";")])
+    AbsGramatyka.Cond expr stmt -> prPrec i 0 (concatD [doc (showString "if"), doc (showString "("), prt 0 expr, doc (showString ")"), prt 0 stmt])
+    AbsGramatyka.CondElse expr stmt1 stmt2 -> prPrec i 0 (concatD [doc (showString "if"), doc (showString "("), prt 0 expr, doc (showString ")"), prt 0 stmt1, doc (showString "else"), prt 0 stmt2])
+    AbsGramatyka.While expr stmt -> prPrec i 0 (concatD [doc (showString "while"), doc (showString "("), prt 0 expr, doc (showString ")"), prt 0 stmt])
+    AbsGramatyka.SExp expr -> prPrec i 0 (concatD [prt 0 expr, doc (showString ";")])
 
-instance Print (AbsGramatyka.Item' a) where
+instance Print AbsGramatyka.Item where
   prt i = \case
-    AbsGramatyka.NoInit _ id_ -> prPrec i 0 (concatD [prt 0 id_])
-    AbsGramatyka.Init _ id_ expr -> prPrec i 0 (concatD [prt 0 id_, doc (showString "="), prt 0 expr])
+    AbsGramatyka.NoInit id_ -> prPrec i 0 (concatD [prt 0 id_])
+    AbsGramatyka.Init id_ expr -> prPrec i 0 (concatD [prt 0 id_, doc (showString "="), prt 0 expr])
 
-instance Print (AbsGramatyka.Type' a) where
+instance Print AbsGramatyka.Type where
   prt i = \case
-    AbsGramatyka.Int _ -> prPrec i 0 (concatD [doc (showString "int")])
-    AbsGramatyka.Str _ -> prPrec i 0 (concatD [doc (showString "string")])
-    AbsGramatyka.Bool _ -> prPrec i 0 (concatD [doc (showString "bool")])
+    AbsGramatyka.Int -> prPrec i 0 (concatD [doc (showString "int")])
+    AbsGramatyka.Str -> prPrec i 0 (concatD [doc (showString "string")])
+    AbsGramatyka.Bool -> prPrec i 0 (concatD [doc (showString "bool")])
 
-instance Print (AbsGramatyka.Expr' a) where
+instance Print AbsGramatyka.Expr where
   prt i = \case
-    AbsGramatyka.EVar _ id_ -> prPrec i 6 (concatD [prt 0 id_])
-    AbsGramatyka.ELitInt _ n -> prPrec i 6 (concatD [prt 0 n])
-    AbsGramatyka.ELitTrue _ -> prPrec i 6 (concatD [doc (showString "true")])
-    AbsGramatyka.ELitFalse _ -> prPrec i 6 (concatD [doc (showString "false")])
-    AbsGramatyka.EApp _ id_ exprs -> prPrec i 6 (concatD [prt 0 id_, doc (showString "("), prt 0 exprs, doc (showString ")")])
-    AbsGramatyka.EString _ str -> prPrec i 6 (concatD [printString str])
-    AbsGramatyka.Neg _ expr -> prPrec i 5 (concatD [doc (showString "-"), prt 6 expr])
-    AbsGramatyka.Not _ expr -> prPrec i 5 (concatD [doc (showString "!"), prt 6 expr])
-    AbsGramatyka.EMul _ expr1 mulop expr2 -> prPrec i 4 (concatD [prt 4 expr1, prt 0 mulop, prt 5 expr2])
-    AbsGramatyka.EAdd _ expr1 addop expr2 -> prPrec i 3 (concatD [prt 3 expr1, prt 0 addop, prt 4 expr2])
-    AbsGramatyka.ERel _ expr1 relop expr2 -> prPrec i 2 (concatD [prt 2 expr1, prt 0 relop, prt 3 expr2])
-    AbsGramatyka.EAnd _ expr1 expr2 -> prPrec i 1 (concatD [prt 2 expr1, doc (showString "&&"), prt 1 expr2])
-    AbsGramatyka.EOr _ expr1 expr2 -> prPrec i 0 (concatD [prt 1 expr1, doc (showString "||"), prt 0 expr2])
+    AbsGramatyka.EVar id_ -> prPrec i 6 (concatD [prt 0 id_])
+    AbsGramatyka.ELitInt n -> prPrec i 6 (concatD [prt 0 n])
+    AbsGramatyka.ELitTrue -> prPrec i 6 (concatD [doc (showString "true")])
+    AbsGramatyka.ELitFalse -> prPrec i 6 (concatD [doc (showString "false")])
+    AbsGramatyka.EApp id_ exprs -> prPrec i 6 (concatD [prt 0 id_, doc (showString "("), prt 0 exprs, doc (showString ")")])
+    AbsGramatyka.EString str -> prPrec i 6 (concatD [printString str])
+    AbsGramatyka.Neg expr -> prPrec i 5 (concatD [doc (showString "-"), prt 6 expr])
+    AbsGramatyka.Not expr -> prPrec i 5 (concatD [doc (showString "!"), prt 6 expr])
+    AbsGramatyka.EMul expr1 mulop expr2 -> prPrec i 4 (concatD [prt 4 expr1, prt 0 mulop, prt 5 expr2])
+    AbsGramatyka.EAdd expr1 addop expr2 -> prPrec i 3 (concatD [prt 3 expr1, prt 0 addop, prt 4 expr2])
+    AbsGramatyka.ERel expr1 relop expr2 -> prPrec i 2 (concatD [prt 2 expr1, prt 0 relop, prt 3 expr2])
+    AbsGramatyka.EAnd expr1 expr2 -> prPrec i 1 (concatD [prt 2 expr1, doc (showString "&&"), prt 1 expr2])
+    AbsGramatyka.EOr expr1 expr2 -> prPrec i 0 (concatD [prt 1 expr1, doc (showString "||"), prt 0 expr2])
 
-instance Print [AbsGramatyka.Expr' a] where
+instance Print [AbsGramatyka.Expr] where
   prt _ [] = concatD []
   prt _ [x] = concatD [prt 0 x]
   prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
 
-instance Print (AbsGramatyka.AddOp' a) where
+instance Print AbsGramatyka.AddOp where
   prt i = \case
-    AbsGramatyka.Plus _ -> prPrec i 0 (concatD [doc (showString "+")])
-    AbsGramatyka.Minus _ -> prPrec i 0 (concatD [doc (showString "-")])
+    AbsGramatyka.Plus -> prPrec i 0 (concatD [doc (showString "+")])
+    AbsGramatyka.Minus -> prPrec i 0 (concatD [doc (showString "-")])
 
-instance Print (AbsGramatyka.MulOp' a) where
+instance Print AbsGramatyka.MulOp where
   prt i = \case
-    AbsGramatyka.Times _ -> prPrec i 0 (concatD [doc (showString "*")])
-    AbsGramatyka.Div _ -> prPrec i 0 (concatD [doc (showString "/")])
-    AbsGramatyka.Mod _ -> prPrec i 0 (concatD [doc (showString "%")])
+    AbsGramatyka.Times -> prPrec i 0 (concatD [doc (showString "*")])
+    AbsGramatyka.Div -> prPrec i 0 (concatD [doc (showString "/")])
+    AbsGramatyka.Mod -> prPrec i 0 (concatD [doc (showString "%")])
 
-instance Print (AbsGramatyka.RelOp' a) where
+instance Print AbsGramatyka.RelOp where
   prt i = \case
-    AbsGramatyka.LTH _ -> prPrec i 0 (concatD [doc (showString "<")])
-    AbsGramatyka.LE _ -> prPrec i 0 (concatD [doc (showString "<=")])
-    AbsGramatyka.GTH _ -> prPrec i 0 (concatD [doc (showString ">")])
-    AbsGramatyka.GE _ -> prPrec i 0 (concatD [doc (showString ">=")])
-    AbsGramatyka.EQU _ -> prPrec i 0 (concatD [doc (showString "==")])
-    AbsGramatyka.NE _ -> prPrec i 0 (concatD [doc (showString "!=")])
+    AbsGramatyka.LTH -> prPrec i 0 (concatD [doc (showString "<")])
+    AbsGramatyka.LE -> prPrec i 0 (concatD [doc (showString "<=")])
+    AbsGramatyka.GTH -> prPrec i 0 (concatD [doc (showString ">")])
+    AbsGramatyka.GE -> prPrec i 0 (concatD [doc (showString ">=")])
+    AbsGramatyka.EQU -> prPrec i 0 (concatD [doc (showString "==")])
+    AbsGramatyka.NE -> prPrec i 0 (concatD [doc (showString "!=")])

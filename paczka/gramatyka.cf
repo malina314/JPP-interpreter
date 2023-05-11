@@ -36,8 +36,6 @@ Ass.       Stmt ::= Ident "=" Expr  ";" ;
 
 Ret.       Stmt ::= "return" Expr ";" ;
 
-VRet.      Stmt ::= "return" ";" ;
-
 Cond.      Stmt ::= "if" "(" Expr ")" Stmt ;
 
 CondElse.  Stmt ::= "if" "(" Expr ")" Stmt "else" Stmt ;
