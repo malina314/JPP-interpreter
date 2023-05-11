@@ -17,38 +17,35 @@ failure x = Left $ "Undefined case: " ++ show x
 
 checkIdent :: AbsGramatyka.Ident -> Result
 checkIdent x = case x of
-  AbsGramatyka.Ident string -> failure x
+  AbsGramatyka.Ident string -> failure x -- todo: zapisać ident w stanie i sprawdzić czy nie jest już zadeklarowany
 
 checkProgram :: Show a => AbsGramatyka.Program' a -> Result
 checkProgram x = case x of
   AbsGramatyka.Program _ topdefs -> failure x -- TODO przejść po topdefs i
-  -- w jakimś stanie trzymać typy zmiennych i funkcji, a potem 
-  -- sprawdzić typy w każdej funkcji
+                                              -- w jakimś stanie trzymać typy zmiennych i funkcji, a potem 
+                                              -- sprawdzić typy w każdej funkcji
 
 checkTopDef :: Show a => AbsGramatyka.TopDef' a -> Result
 checkTopDef x = case x of
-  AbsGramatyka.VarDef _ type_ item -> failure x
-  AbsGramatyka.FnDef _ type_ ident args block -> failure x
+  AbsGramatyka.VarDef pos type_ item -> checkItemWithType pos type_ item -- todo: potencjalnie ident trzeba zapisać w stanie
+  AbsGramatyka.FnDef _ type_ ident args block -> failure x -- todo: potencjalnie ident trzeba zapisać w stanie
 
 checkArg :: Show a => AbsGramatyka.Arg' a -> Result
 checkArg x = case x of
-  AbsGramatyka.Arg _ type_ ident -> failure x
-  AbsGramatyka.ArgVar _ type_ ident -> failure x
+  AbsGramatyka.Arg _ type_ ident -> Right $ mapType type_ -- todo: potencjalnie ident trzeba zapisać w stanie
+  AbsGramatyka.ArgVar _ type_ ident -> Right $ mapType type_ -- todo: potencjalnie ident trzeba zapisać w stanie
 
 checkBlock :: Show a => AbsGramatyka.Block' a -> Result
 checkBlock x = case x of
-  AbsGramatyka.Block _ stmts -> failure x
+  AbsGramatyka.Block _ stmts -> Right Void
 
 checkStmt :: Show a => AbsGramatyka.Stmt' a -> Result
 checkStmt x = case x of
   AbsGramatyka.Empty _ -> Right Void
   AbsGramatyka.BStmt _ block -> Right Void
-  AbsGramatyka.Decl pos type_ item -> case checkItem item of
-    Left err -> Left err
-    Right Void -> Right Void
-    Right t -> if t == mapType type_ then Right Void else Left $ "Type mismatch at " ++ show pos
+  AbsGramatyka.Decl pos type_ item -> checkItemWithType pos type_ item
   AbsGramatyka.Ass _ ident expr -> Right Void
-  AbsGramatyka.Ret _ expr -> Right Void -- todo: sprawdzić czy return jest zgodny z typem funckji
+  AbsGramatyka.Ret _ expr -> failure x -- todo: sprawdzić czy return jest zgodny z typem funckji
   AbsGramatyka.Cond _ expr stmt -> Right Void
   AbsGramatyka.CondElse _ expr stmt1 stmt2 -> Right Void
   AbsGramatyka.While _ expr stmt -> Right Void
@@ -59,6 +56,12 @@ checkItem x = case x of
   AbsGramatyka.NoInit _ ident -> Right Void
   AbsGramatyka.Init _ ident expr -> checkExpr expr
 
+checkItemWithType :: Show a => a -> AbsGramatyka.Type' a -> AbsGramatyka.Item' a -> Result
+checkItemWithType pos type_ item = case checkItem item of
+  Left err -> Left err
+  Right Void -> Right Void
+  Right t -> if t == mapType type_ then Right Void else Left $ "Type mismatch at " ++ show pos ++ ". Expected " ++ show type_ ++ ", got " ++ show t
+
 mapType :: Show a => AbsGramatyka.Type' a -> Type
 mapType x = case x of
   AbsGramatyka.Int _ -> Int
@@ -67,44 +70,34 @@ mapType x = case x of
 
 checkExpr :: Show a => AbsGramatyka.Expr' a -> Result
 checkExpr x = case x of
-  AbsGramatyka.EVar _ ident -> failure x
-  AbsGramatyka.ELitInt _ integer -> failure x
-  AbsGramatyka.ELitTrue _ -> failure x
-  AbsGramatyka.ELitFalse _ -> failure x
-  AbsGramatyka.EApp _ ident exprs -> failure x
-  AbsGramatyka.EString _ string -> failure x
-  AbsGramatyka.Neg _ expr -> failure x
-  AbsGramatyka.Not _ expr -> failure x
-  AbsGramatyka.EMul _ expr1 mulop expr2 -> failure x
-  AbsGramatyka.EAdd _ expr1 addop expr2 -> failure x
-  AbsGramatyka.ERel _ expr1 relop expr2 -> failure x
-  AbsGramatyka.EAnd _ expr1 expr2 -> failure x
-  AbsGramatyka.EOr _ expr1 expr2 -> failure x
+  AbsGramatyka.EVar _ ident -> failure x -- todo: odczytać ze stanu
+  AbsGramatyka.ELitInt _ integer -> Right Int
+  AbsGramatyka.ELitTrue _ -> Right Bool
+  AbsGramatyka.ELitFalse _ -> Right Bool
+  AbsGramatyka.EApp _ ident exprs -> failure x -- todo: odczytać ze stanu funkcji i sprawdzić typy argumentów
+  AbsGramatyka.EString _ string -> Right Str
+  AbsGramatyka.Neg _ expr -> Right Int
+  AbsGramatyka.Not _ expr -> Right Bool
+  AbsGramatyka.EMul pos expr1 mulop expr2 -> checkBinaryIntOp pos expr1 expr2
+  AbsGramatyka.EAdd pos expr1 addop expr2 -> checkBinaryIntOp pos expr1 expr2
+  AbsGramatyka.ERel pos expr1 relop expr2 -> checkBinaryIntOp pos expr1 expr2
+  AbsGramatyka.EAnd pos expr1 expr2 -> checkBinaryBoolOp pos expr1 expr2
+  AbsGramatyka.EOr pos expr1 expr2 -> checkBinaryBoolOp pos expr1 expr2
 
-checkAddOp :: Show a => AbsGramatyka.AddOp' a -> Result
-checkAddOp x = case x of
-  AbsGramatyka.Plus _ -> failure x
-  AbsGramatyka.Minus _ -> failure x
+checkBinaryIntOp :: Show a => a -> AbsGramatyka.Expr' a -> AbsGramatyka.Expr' a -> Result
+checkBinaryIntOp pos expr1 expr2 = case checkExpr expr1 of
+    Left err -> Left err
+    Right t -> if t == Int then
+      case checkExpr expr2 of
+        Left err -> Left err
+        Right t -> if t == Int then Right Int else Left $ "Type mismatch at " ++ show pos ++ " expected Int"
+    else Left $ "Type mismatch at " ++ show pos ++ " expected Int"
 
-checkMulOp :: Show a => AbsGramatyka.MulOp' a -> Result
-checkMulOp x = case x of
-  AbsGramatyka.Times _ -> failure x
-  AbsGramatyka.Div _ -> failure x
-  AbsGramatyka.Mod _ -> failure x
-
-checkRelOp :: Show a => AbsGramatyka.RelOp' a -> Result
-checkRelOp x = case x of
-  AbsGramatyka.LTH _ -> failure x
-  AbsGramatyka.LE _ -> failure x
-  AbsGramatyka.GTH _ -> failure x
-  AbsGramatyka.GE _ -> failure x
-  AbsGramatyka.EQU _ -> failure x
-  AbsGramatyka.NE _ -> failure x
-
-
-
-
-
-
-
-
+checkBinaryBoolOp :: Show a => a -> AbsGramatyka.Expr' a -> AbsGramatyka.Expr' a -> Result
+checkBinaryBoolOp pos expr1 expr2 = case checkExpr expr1 of
+    Left err -> Left err
+    Right t -> if t == Bool then
+      case checkExpr expr2 of
+        Left err -> Left err
+        Right t -> if t == Bool then Right Bool else Left $ "Type mismatch at " ++ show pos ++ " expected Bool"
+    else Left $ "Type mismatch at " ++ show pos ++ " expected Bool"
