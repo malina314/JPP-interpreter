@@ -26,10 +26,12 @@ import Eval
 type Err        = Either String
 type ParseFun a = [Token] -> Err a
 
-runFile :: (Print a, Show a) => ParseFun a -> FilePath -> IO ()
+-- todo: annotate with type
+
+-- runFile :: (Print a, Show a) => ParseFun a -> FilePath -> IO ()
 runFile p f = putStrLn f >> readFile f >>= run p
 
-run :: (Print a, Show a) => ParseFun a -> String -> IO ()
+-- run :: (Print a, Show a) => ParseFun a -> String -> IO ()
 run p s =
   case p ts of
     Left err -> do
