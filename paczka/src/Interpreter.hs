@@ -1,5 +1,3 @@
-{-# LANGUAGE LambdaCase #-}
-
 module Main where
 
 import Prelude
@@ -21,6 +19,9 @@ import LexGramatyka   ( Token, mkPosToken )
 import ParGramatyka   ( pProgram, myLexer )
 import PrintGramatyka ( Print, printTree )
 import SkelGramatyka  ()
+
+import TypeChecker
+import Eval
 
 type Err        = Either String
 type ParseFun a = [Token] -> Err a
@@ -47,14 +48,6 @@ run p s =
   where
   ts = myLexer s
   showPosToken ((l,c),t) = concat [ show l, ":", show c, "\t", show t ]
-
-checkTypes :: Monad m => p -> m (Either a String)
-checkTypes _ = do
-  return (Right "OK")
-
-eval :: p -> IO ()
-eval _ = do
-  putStrLn "Evaluation successful!" -- todo: remove
 
 usage :: IO ()
 usage = do
