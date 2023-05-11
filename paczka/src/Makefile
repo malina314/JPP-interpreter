@@ -14,7 +14,7 @@ ALEX_OPTS  = --ghc
 
 # Default goal.
 
-all : TestGramatyka
+all : Interpreter
 
 # Rules for building the parser.
 

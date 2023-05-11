@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./interpreter tests/example
+./interpreter "../declaration/przyklady/03-zmienne,przypisanie"

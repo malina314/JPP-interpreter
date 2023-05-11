@@ -7,7 +7,7 @@ main:
 	cp src/interpreter interpreter
 
 test:
-	./interpreter "../declaration/przyklady/03-zmienne,przypisanie"
+	./test.sh
 
 # todo: clean
 clean:
