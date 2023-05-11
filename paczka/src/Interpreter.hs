@@ -46,7 +46,7 @@ run p s =
       case checkTypes tree of
         Left err -> putStrLn err
         Right _ -> do
-          putStrLn "Type checking successful!" -- todo: remove
+          putStrLn "Type checking successful!"
           eval tree
   where
   ts = myLexer s
@@ -58,7 +58,7 @@ checkTypes _ = do
 
 eval :: p -> IO ()
 eval _ = do
-  putStrLn "Evaluation successful!" -- todo: remove
+  putStrLn "Evaluation successful!"
 
 usage :: IO ()
 usage = do

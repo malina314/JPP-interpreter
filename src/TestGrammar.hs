@@ -2,8 +2,6 @@
 
 -- | Program to test parser.
 
-{-# LANGUAGE LambdaCase #-}
-
 module Main where
 
 import Prelude
@@ -18,47 +16,44 @@ import Prelude
   )
 import System.Environment ( getArgs )
 import System.Exit        ( exitFailure )
-import Control.Monad
+import Control.Monad      ( when )
 
-import AbsGramatyka   ()
-import LexGramatyka   ( Token, mkPosToken )
-import ParGramatyka   ( pProgram, myLexer )
-import PrintGramatyka ( Print, printTree )
-import SkelGramatyka  ()
+import AbsGrammar   ()
+import LexGrammar   ( Token, mkPosToken )
+import ParGrammar   ( pProgram, myLexer )
+import PrintGrammar ( Print, printTree )
+import SkelGrammar  ()
 
 type Err        = Either String
 type ParseFun a = [Token] -> Err a
+type Verbosity  = Int
 
-runFile :: (Print a, Show a) => ParseFun a -> FilePath -> IO ()
-runFile p f = putStrLn f >> readFile f >>= run p
+putStrV :: Verbosity -> String -> IO ()
+putStrV v s = when (v > 1) $ putStrLn s
 
-run :: (Print a, Show a) => ParseFun a -> String -> IO ()
-run p s =
+runFile :: (Print a, Show a) => Verbosity -> ParseFun a -> FilePath -> IO ()
+runFile v p f = putStrLn f >> readFile f >>= run v p
+
+run :: (Print a, Show a) => Verbosity -> ParseFun a -> String -> IO ()
+run v p s =
   case p ts of
     Left err -> do
       putStrLn "\nParse              Failed...\n"
-      putStrLn "Tokens:"
-      mapM_ (putStrLn . showPosToken . mkPosToken) ts
+      putStrV v "Tokens:"
+      mapM_ (putStrV v . showPosToken . mkPosToken) ts
       putStrLn err
       exitFailure
     Right tree -> do
-      putStrLn "\nParse Successful!" -- todo: remove
-      case checkTypes tree of
-        Left err -> putStrLn err
-        Right _ -> do
-          putStrLn "Type checking successful!" -- todo: remove
-          eval tree
+      putStrLn "\nParse Successful!"
+      showTree v tree
   where
   ts = myLexer s
   showPosToken ((l,c),t) = concat [ show l, ":", show c, "\t", show t ]
 
-checkTypes :: Monad m => p -> m (Either a String)
-checkTypes _ = do
-  return (Right "OK")
-
-eval :: p -> IO ()
-eval _ = do
-  putStrLn "Evaluation successful!" -- todo: remove
+showTree :: (Show a, Print a) => Int -> a -> IO ()
+showTree v tree = do
+  putStrV v $ "\n[Abstract Syntax]\n\n" ++ show tree
+  putStrV v $ "\n[Linearized tree]\n\n" ++ printTree tree
 
 usage :: IO ()
 usage = do
@@ -75,7 +70,7 @@ main = do
   args <- getArgs
   case args of
     ["--help"] -> usage
-    []         -> getContents >>= run pProgram
-    "-s":fs    -> mapM_ (runFile pProgram) fs
-    fs         -> mapM_ (runFile pProgram) fs
+    []         -> getContents >>= run 2 pProgram
+    "-s":fs    -> mapM_ (runFile 0 pProgram) fs
+    fs         -> mapM_ (runFile 2 pProgram) fs
 
