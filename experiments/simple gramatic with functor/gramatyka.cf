@@ -1,0 +1,55 @@
+-- programs ------------------------------------------------
+
+entrypoints Program ;
+
+Program.   Program ::= [TopDef] ;
+
+VarDef.	   TopDef ::= "global" Type Item ";" ;
+
+separator nonempty TopDef "" ;
+
+Arg. 	   Arg ::= Type Ident;
+
+separator  Arg "," ;
+
+-- statements ----------------------------------------------
+
+Empty.     Stmt ::= ";" ;
+
+Decl.      Stmt ::= Type Item ";" ;
+
+NoInit.    Item ::= Ident ; 
+
+Init.      Item ::= Ident "=" Expr ;
+
+Ass.       Stmt ::= Ident "=" Expr  ";" ;
+
+-- Types ---------------------------------------------------
+
+Int.       Type ::= "int" ;
+
+Bool.      Type ::= "bool" ;
+
+-- Expressions ---------------------------------------------
+
+EVar.      Expr ::= Ident ;
+
+ELitInt.   Expr ::= Integer ;
+
+ELitTrue.  Expr ::= "true" ;
+
+ELitFalse. Expr ::= "false" ;
+
+separator  Expr "," ;
+
+-- operators -----------------------------------------------
+
+Plus.      AddOp ::= "+" ;
+
+-- comments ------------------------------------------------
+
+comment    "#" ;
+
+comment    "//" ;
+
+comment    "/*" "*/" ;
