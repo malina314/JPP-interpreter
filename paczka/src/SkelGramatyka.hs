@@ -19,79 +19,79 @@ transIdent :: AbsGramatyka.Ident -> Result
 transIdent x = case x of
   AbsGramatyka.Ident string -> failure x
 
-transProgram :: AbsGramatyka.Program -> Result
+transProgram :: Show a => AbsGramatyka.Program' a -> Result
 transProgram x = case x of
-  AbsGramatyka.Program topdefs -> failure x
+  AbsGramatyka.Program _ topdefs -> failure x
 
-transTopDef :: AbsGramatyka.TopDef -> Result
+transTopDef :: Show a => AbsGramatyka.TopDef' a -> Result
 transTopDef x = case x of
-  AbsGramatyka.VarDef type_ item -> failure x
-  AbsGramatyka.FnDef type_ ident args block -> failure x
+  AbsGramatyka.VarDef _ type_ item -> failure x
+  AbsGramatyka.FnDef _ type_ ident args block -> failure x
 
-transArg :: AbsGramatyka.Arg -> Result
+transArg :: Show a => AbsGramatyka.Arg' a -> Result
 transArg x = case x of
-  AbsGramatyka.Arg type_ ident -> failure x
-  AbsGramatyka.ArgVar type_ ident -> failure x
+  AbsGramatyka.Arg _ type_ ident -> failure x
+  AbsGramatyka.ArgVar _ type_ ident -> failure x
 
-transBlock :: AbsGramatyka.Block -> Result
+transBlock :: Show a => AbsGramatyka.Block' a -> Result
 transBlock x = case x of
-  AbsGramatyka.Block stmts -> failure x
+  AbsGramatyka.Block _ stmts -> failure x
 
-transStmt :: AbsGramatyka.Stmt -> Result
+transStmt :: Show a => AbsGramatyka.Stmt' a -> Result
 transStmt x = case x of
-  AbsGramatyka.Empty -> failure x
-  AbsGramatyka.BStmt block -> failure x
-  AbsGramatyka.Decl type_ item -> failure x
-  AbsGramatyka.Ass ident expr -> failure x
-  AbsGramatyka.Ret expr -> failure x
-  AbsGramatyka.Cond expr stmt -> failure x
-  AbsGramatyka.CondElse expr stmt1 stmt2 -> failure x
-  AbsGramatyka.While expr stmt -> failure x
-  AbsGramatyka.SExp expr -> failure x
+  AbsGramatyka.Empty _ -> failure x
+  AbsGramatyka.BStmt _ block -> failure x
+  AbsGramatyka.Decl _ type_ item -> failure x
+  AbsGramatyka.Ass _ ident expr -> failure x
+  AbsGramatyka.Ret _ expr -> failure x
+  AbsGramatyka.Cond _ expr stmt -> failure x
+  AbsGramatyka.CondElse _ expr stmt1 stmt2 -> failure x
+  AbsGramatyka.While _ expr stmt -> failure x
+  AbsGramatyka.SExp _ expr -> failure x
 
-transItem :: AbsGramatyka.Item -> Result
+transItem :: Show a => AbsGramatyka.Item' a -> Result
 transItem x = case x of
-  AbsGramatyka.NoInit ident -> failure x
-  AbsGramatyka.Init ident expr -> failure x
+  AbsGramatyka.NoInit _ ident -> failure x
+  AbsGramatyka.Init _ ident expr -> failure x
 
-transType :: AbsGramatyka.Type -> Result
+transType :: Show a => AbsGramatyka.Type' a -> Result
 transType x = case x of
-  AbsGramatyka.Int -> failure x
-  AbsGramatyka.Str -> failure x
-  AbsGramatyka.Bool -> failure x
+  AbsGramatyka.Int _ -> failure x
+  AbsGramatyka.Str _ -> failure x
+  AbsGramatyka.Bool _ -> failure x
 
-transExpr :: AbsGramatyka.Expr -> Result
+transExpr :: Show a => AbsGramatyka.Expr' a -> Result
 transExpr x = case x of
-  AbsGramatyka.EVar ident -> failure x
-  AbsGramatyka.ELitInt integer -> failure x
-  AbsGramatyka.ELitTrue -> failure x
-  AbsGramatyka.ELitFalse -> failure x
-  AbsGramatyka.EApp ident exprs -> failure x
-  AbsGramatyka.EString string -> failure x
-  AbsGramatyka.Neg expr -> failure x
-  AbsGramatyka.Not expr -> failure x
-  AbsGramatyka.EMul expr1 mulop expr2 -> failure x
-  AbsGramatyka.EAdd expr1 addop expr2 -> failure x
-  AbsGramatyka.ERel expr1 relop expr2 -> failure x
-  AbsGramatyka.EAnd expr1 expr2 -> failure x
-  AbsGramatyka.EOr expr1 expr2 -> failure x
+  AbsGramatyka.EVar _ ident -> failure x
+  AbsGramatyka.ELitInt _ integer -> failure x
+  AbsGramatyka.ELitTrue _ -> failure x
+  AbsGramatyka.ELitFalse _ -> failure x
+  AbsGramatyka.EApp _ ident exprs -> failure x
+  AbsGramatyka.EString _ string -> failure x
+  AbsGramatyka.Neg _ expr -> failure x
+  AbsGramatyka.Not _ expr -> failure x
+  AbsGramatyka.EMul _ expr1 mulop expr2 -> failure x
+  AbsGramatyka.EAdd _ expr1 addop expr2 -> failure x
+  AbsGramatyka.ERel _ expr1 relop expr2 -> failure x
+  AbsGramatyka.EAnd _ expr1 expr2 -> failure x
+  AbsGramatyka.EOr _ expr1 expr2 -> failure x
 
-transAddOp :: AbsGramatyka.AddOp -> Result
+transAddOp :: Show a => AbsGramatyka.AddOp' a -> Result
 transAddOp x = case x of
-  AbsGramatyka.Plus -> failure x
-  AbsGramatyka.Minus -> failure x
+  AbsGramatyka.Plus _ -> failure x
+  AbsGramatyka.Minus _ -> failure x
 
-transMulOp :: AbsGramatyka.MulOp -> Result
+transMulOp :: Show a => AbsGramatyka.MulOp' a -> Result
 transMulOp x = case x of
-  AbsGramatyka.Times -> failure x
-  AbsGramatyka.Div -> failure x
-  AbsGramatyka.Mod -> failure x
+  AbsGramatyka.Times _ -> failure x
+  AbsGramatyka.Div _ -> failure x
+  AbsGramatyka.Mod _ -> failure x
 
-transRelOp :: AbsGramatyka.RelOp -> Result
+transRelOp :: Show a => AbsGramatyka.RelOp' a -> Result
 transRelOp x = case x of
-  AbsGramatyka.LTH -> failure x
-  AbsGramatyka.LE -> failure x
-  AbsGramatyka.GTH -> failure x
-  AbsGramatyka.GE -> failure x
-  AbsGramatyka.EQU -> failure x
-  AbsGramatyka.NE -> failure x
+  AbsGramatyka.LTH _ -> failure x
+  AbsGramatyka.LE _ -> failure x
+  AbsGramatyka.GTH _ -> failure x
+  AbsGramatyka.GE _ -> failure x
+  AbsGramatyka.EQU _ -> failure x
+  AbsGramatyka.NE _ -> failure x

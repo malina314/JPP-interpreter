@@ -30,169 +30,169 @@ type HappyAny = Happy_GHC_Exts.Any
 #else
 type HappyAny = forall a . a
 #endif
-newtype HappyWrap4 = HappyWrap4 (AbsGramatyka.Ident)
-happyIn4 :: (AbsGramatyka.Ident) -> (HappyAbsSyn )
+newtype HappyWrap4 = HappyWrap4 ((AbsGramatyka.BNFC'Position, AbsGramatyka.Ident))
+happyIn4 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.Ident)) -> (HappyAbsSyn )
 happyIn4 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap4 x)
 {-# INLINE happyIn4 #-}
 happyOut4 :: (HappyAbsSyn ) -> HappyWrap4
 happyOut4 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut4 #-}
-newtype HappyWrap5 = HappyWrap5 (Integer)
-happyIn5 :: (Integer) -> (HappyAbsSyn )
+newtype HappyWrap5 = HappyWrap5 ((AbsGramatyka.BNFC'Position, Integer))
+happyIn5 :: ((AbsGramatyka.BNFC'Position, Integer)) -> (HappyAbsSyn )
 happyIn5 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap5 x)
 {-# INLINE happyIn5 #-}
 happyOut5 :: (HappyAbsSyn ) -> HappyWrap5
 happyOut5 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut5 #-}
-newtype HappyWrap6 = HappyWrap6 (String)
-happyIn6 :: (String) -> (HappyAbsSyn )
+newtype HappyWrap6 = HappyWrap6 ((AbsGramatyka.BNFC'Position, String))
+happyIn6 :: ((AbsGramatyka.BNFC'Position, String)) -> (HappyAbsSyn )
 happyIn6 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap6 x)
 {-# INLINE happyIn6 #-}
 happyOut6 :: (HappyAbsSyn ) -> HappyWrap6
 happyOut6 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut6 #-}
-newtype HappyWrap7 = HappyWrap7 (AbsGramatyka.Program)
-happyIn7 :: (AbsGramatyka.Program) -> (HappyAbsSyn )
+newtype HappyWrap7 = HappyWrap7 ((AbsGramatyka.BNFC'Position, AbsGramatyka.Program))
+happyIn7 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.Program)) -> (HappyAbsSyn )
 happyIn7 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap7 x)
 {-# INLINE happyIn7 #-}
 happyOut7 :: (HappyAbsSyn ) -> HappyWrap7
 happyOut7 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut7 #-}
-newtype HappyWrap8 = HappyWrap8 (AbsGramatyka.TopDef)
-happyIn8 :: (AbsGramatyka.TopDef) -> (HappyAbsSyn )
+newtype HappyWrap8 = HappyWrap8 ((AbsGramatyka.BNFC'Position, AbsGramatyka.TopDef))
+happyIn8 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.TopDef)) -> (HappyAbsSyn )
 happyIn8 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap8 x)
 {-# INLINE happyIn8 #-}
 happyOut8 :: (HappyAbsSyn ) -> HappyWrap8
 happyOut8 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut8 #-}
-newtype HappyWrap9 = HappyWrap9 ([AbsGramatyka.TopDef])
-happyIn9 :: ([AbsGramatyka.TopDef]) -> (HappyAbsSyn )
+newtype HappyWrap9 = HappyWrap9 ((AbsGramatyka.BNFC'Position, [AbsGramatyka.TopDef]))
+happyIn9 :: ((AbsGramatyka.BNFC'Position, [AbsGramatyka.TopDef])) -> (HappyAbsSyn )
 happyIn9 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap9 x)
 {-# INLINE happyIn9 #-}
 happyOut9 :: (HappyAbsSyn ) -> HappyWrap9
 happyOut9 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut9 #-}
-newtype HappyWrap10 = HappyWrap10 (AbsGramatyka.Arg)
-happyIn10 :: (AbsGramatyka.Arg) -> (HappyAbsSyn )
+newtype HappyWrap10 = HappyWrap10 ((AbsGramatyka.BNFC'Position, AbsGramatyka.Arg))
+happyIn10 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.Arg)) -> (HappyAbsSyn )
 happyIn10 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap10 x)
 {-# INLINE happyIn10 #-}
 happyOut10 :: (HappyAbsSyn ) -> HappyWrap10
 happyOut10 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut10 #-}
-newtype HappyWrap11 = HappyWrap11 ([AbsGramatyka.Arg])
-happyIn11 :: ([AbsGramatyka.Arg]) -> (HappyAbsSyn )
+newtype HappyWrap11 = HappyWrap11 ((AbsGramatyka.BNFC'Position, [AbsGramatyka.Arg]))
+happyIn11 :: ((AbsGramatyka.BNFC'Position, [AbsGramatyka.Arg])) -> (HappyAbsSyn )
 happyIn11 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap11 x)
 {-# INLINE happyIn11 #-}
 happyOut11 :: (HappyAbsSyn ) -> HappyWrap11
 happyOut11 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut11 #-}
-newtype HappyWrap12 = HappyWrap12 (AbsGramatyka.Block)
-happyIn12 :: (AbsGramatyka.Block) -> (HappyAbsSyn )
+newtype HappyWrap12 = HappyWrap12 ((AbsGramatyka.BNFC'Position, AbsGramatyka.Block))
+happyIn12 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.Block)) -> (HappyAbsSyn )
 happyIn12 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap12 x)
 {-# INLINE happyIn12 #-}
 happyOut12 :: (HappyAbsSyn ) -> HappyWrap12
 happyOut12 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut12 #-}
-newtype HappyWrap13 = HappyWrap13 ([AbsGramatyka.Stmt])
-happyIn13 :: ([AbsGramatyka.Stmt]) -> (HappyAbsSyn )
+newtype HappyWrap13 = HappyWrap13 ((AbsGramatyka.BNFC'Position, [AbsGramatyka.Stmt]))
+happyIn13 :: ((AbsGramatyka.BNFC'Position, [AbsGramatyka.Stmt])) -> (HappyAbsSyn )
 happyIn13 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap13 x)
 {-# INLINE happyIn13 #-}
 happyOut13 :: (HappyAbsSyn ) -> HappyWrap13
 happyOut13 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut13 #-}
-newtype HappyWrap14 = HappyWrap14 (AbsGramatyka.Stmt)
-happyIn14 :: (AbsGramatyka.Stmt) -> (HappyAbsSyn )
+newtype HappyWrap14 = HappyWrap14 ((AbsGramatyka.BNFC'Position, AbsGramatyka.Stmt))
+happyIn14 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.Stmt)) -> (HappyAbsSyn )
 happyIn14 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap14 x)
 {-# INLINE happyIn14 #-}
 happyOut14 :: (HappyAbsSyn ) -> HappyWrap14
 happyOut14 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut14 #-}
-newtype HappyWrap15 = HappyWrap15 (AbsGramatyka.Item)
-happyIn15 :: (AbsGramatyka.Item) -> (HappyAbsSyn )
+newtype HappyWrap15 = HappyWrap15 ((AbsGramatyka.BNFC'Position, AbsGramatyka.Item))
+happyIn15 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.Item)) -> (HappyAbsSyn )
 happyIn15 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap15 x)
 {-# INLINE happyIn15 #-}
 happyOut15 :: (HappyAbsSyn ) -> HappyWrap15
 happyOut15 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut15 #-}
-newtype HappyWrap16 = HappyWrap16 (AbsGramatyka.Type)
-happyIn16 :: (AbsGramatyka.Type) -> (HappyAbsSyn )
+newtype HappyWrap16 = HappyWrap16 ((AbsGramatyka.BNFC'Position, AbsGramatyka.Type))
+happyIn16 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.Type)) -> (HappyAbsSyn )
 happyIn16 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap16 x)
 {-# INLINE happyIn16 #-}
 happyOut16 :: (HappyAbsSyn ) -> HappyWrap16
 happyOut16 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut16 #-}
-newtype HappyWrap17 = HappyWrap17 (AbsGramatyka.Expr)
-happyIn17 :: (AbsGramatyka.Expr) -> (HappyAbsSyn )
+newtype HappyWrap17 = HappyWrap17 ((AbsGramatyka.BNFC'Position, AbsGramatyka.Expr))
+happyIn17 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.Expr)) -> (HappyAbsSyn )
 happyIn17 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap17 x)
 {-# INLINE happyIn17 #-}
 happyOut17 :: (HappyAbsSyn ) -> HappyWrap17
 happyOut17 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut17 #-}
-newtype HappyWrap18 = HappyWrap18 (AbsGramatyka.Expr)
-happyIn18 :: (AbsGramatyka.Expr) -> (HappyAbsSyn )
+newtype HappyWrap18 = HappyWrap18 ((AbsGramatyka.BNFC'Position, AbsGramatyka.Expr))
+happyIn18 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.Expr)) -> (HappyAbsSyn )
 happyIn18 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap18 x)
 {-# INLINE happyIn18 #-}
 happyOut18 :: (HappyAbsSyn ) -> HappyWrap18
 happyOut18 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut18 #-}
-newtype HappyWrap19 = HappyWrap19 (AbsGramatyka.Expr)
-happyIn19 :: (AbsGramatyka.Expr) -> (HappyAbsSyn )
+newtype HappyWrap19 = HappyWrap19 ((AbsGramatyka.BNFC'Position, AbsGramatyka.Expr))
+happyIn19 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.Expr)) -> (HappyAbsSyn )
 happyIn19 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap19 x)
 {-# INLINE happyIn19 #-}
 happyOut19 :: (HappyAbsSyn ) -> HappyWrap19
 happyOut19 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut19 #-}
-newtype HappyWrap20 = HappyWrap20 (AbsGramatyka.Expr)
-happyIn20 :: (AbsGramatyka.Expr) -> (HappyAbsSyn )
+newtype HappyWrap20 = HappyWrap20 ((AbsGramatyka.BNFC'Position, AbsGramatyka.Expr))
+happyIn20 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.Expr)) -> (HappyAbsSyn )
 happyIn20 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap20 x)
 {-# INLINE happyIn20 #-}
 happyOut20 :: (HappyAbsSyn ) -> HappyWrap20
 happyOut20 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut20 #-}
-newtype HappyWrap21 = HappyWrap21 (AbsGramatyka.Expr)
-happyIn21 :: (AbsGramatyka.Expr) -> (HappyAbsSyn )
+newtype HappyWrap21 = HappyWrap21 ((AbsGramatyka.BNFC'Position, AbsGramatyka.Expr))
+happyIn21 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.Expr)) -> (HappyAbsSyn )
 happyIn21 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap21 x)
 {-# INLINE happyIn21 #-}
 happyOut21 :: (HappyAbsSyn ) -> HappyWrap21
 happyOut21 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut21 #-}
-newtype HappyWrap22 = HappyWrap22 (AbsGramatyka.Expr)
-happyIn22 :: (AbsGramatyka.Expr) -> (HappyAbsSyn )
+newtype HappyWrap22 = HappyWrap22 ((AbsGramatyka.BNFC'Position, AbsGramatyka.Expr))
+happyIn22 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.Expr)) -> (HappyAbsSyn )
 happyIn22 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap22 x)
 {-# INLINE happyIn22 #-}
 happyOut22 :: (HappyAbsSyn ) -> HappyWrap22
 happyOut22 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut22 #-}
-newtype HappyWrap23 = HappyWrap23 (AbsGramatyka.Expr)
-happyIn23 :: (AbsGramatyka.Expr) -> (HappyAbsSyn )
+newtype HappyWrap23 = HappyWrap23 ((AbsGramatyka.BNFC'Position, AbsGramatyka.Expr))
+happyIn23 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.Expr)) -> (HappyAbsSyn )
 happyIn23 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap23 x)
 {-# INLINE happyIn23 #-}
 happyOut23 :: (HappyAbsSyn ) -> HappyWrap23
 happyOut23 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut23 #-}
-newtype HappyWrap24 = HappyWrap24 ([AbsGramatyka.Expr])
-happyIn24 :: ([AbsGramatyka.Expr]) -> (HappyAbsSyn )
+newtype HappyWrap24 = HappyWrap24 ((AbsGramatyka.BNFC'Position, [AbsGramatyka.Expr]))
+happyIn24 :: ((AbsGramatyka.BNFC'Position, [AbsGramatyka.Expr])) -> (HappyAbsSyn )
 happyIn24 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap24 x)
 {-# INLINE happyIn24 #-}
 happyOut24 :: (HappyAbsSyn ) -> HappyWrap24
 happyOut24 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut24 #-}
-newtype HappyWrap25 = HappyWrap25 (AbsGramatyka.AddOp)
-happyIn25 :: (AbsGramatyka.AddOp) -> (HappyAbsSyn )
+newtype HappyWrap25 = HappyWrap25 ((AbsGramatyka.BNFC'Position, AbsGramatyka.AddOp))
+happyIn25 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.AddOp)) -> (HappyAbsSyn )
 happyIn25 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap25 x)
 {-# INLINE happyIn25 #-}
 happyOut25 :: (HappyAbsSyn ) -> HappyWrap25
 happyOut25 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut25 #-}
-newtype HappyWrap26 = HappyWrap26 (AbsGramatyka.MulOp)
-happyIn26 :: (AbsGramatyka.MulOp) -> (HappyAbsSyn )
+newtype HappyWrap26 = HappyWrap26 ((AbsGramatyka.BNFC'Position, AbsGramatyka.MulOp))
+happyIn26 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.MulOp)) -> (HappyAbsSyn )
 happyIn26 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap26 x)
 {-# INLINE happyIn26 #-}
 happyOut26 :: (HappyAbsSyn ) -> HappyWrap26
 happyOut26 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut26 #-}
-newtype HappyWrap27 = HappyWrap27 (AbsGramatyka.RelOp)
-happyIn27 :: (AbsGramatyka.RelOp) -> (HappyAbsSyn )
+newtype HappyWrap27 = HappyWrap27 ((AbsGramatyka.BNFC'Position, AbsGramatyka.RelOp))
+happyIn27 :: ((AbsGramatyka.BNFC'Position, AbsGramatyka.RelOp)) -> (HappyAbsSyn )
 happyIn27 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap27 x)
 {-# INLINE happyIn27 #-}
 happyOut27 :: (HappyAbsSyn ) -> HappyWrap27
@@ -212,7 +212,7 @@ happyExpList = HappyA# "\x00\x00\x00\x00\x00\x20\x15\x00\x00\x00\x00\x00\x00\x00
 {-# NOINLINE happyExpListPerState #-}
 happyExpListPerState st =
     token_strs_expected
-  where token_strs = ["error","%dummy","%start_pProgram","Ident","Integer","String","Program","TopDef","ListTopDef","Arg","ListArg","Block","ListStmt","Stmt","Item","Type","Expr6","Expr5","Expr4","Expr3","Expr2","Expr1","Expr","ListExpr","AddOp","MulOp","RelOp","'!'","'!='","'%'","'&&'","'('","')'","'*'","'+'","','","'-'","'/'","';'","'<'","'<='","'='","'=='","'>'","'>='","'bool'","'else'","'false'","'global'","'if'","'int'","'return'","'string'","'true'","'var'","'while'","'{'","'||'","'}'","L_Ident","L_integ","L_quoted","%eof"]
+  where token_strs = ["error","%dummy","%start_pProgram_internal","Ident","Integer","String","Program","TopDef","ListTopDef","Arg","ListArg","Block","ListStmt","Stmt","Item","Type","Expr6","Expr5","Expr4","Expr3","Expr2","Expr1","Expr","ListExpr","AddOp","MulOp","RelOp","'!'","'!='","'%'","'&&'","'('","')'","'*'","'+'","','","'-'","'/'","';'","'<'","'<='","'='","'=='","'>'","'>='","'bool'","'else'","'false'","'global'","'if'","'int'","'return'","'string'","'true'","'var'","'while'","'{'","'||'","'}'","L_Ident","L_integ","L_quoted","%eof"]
         bit_start = st Prelude.* 63
         bit_end = (st Prelude.+ 1) Prelude.* 63
         read_bit = readArrayBit happyExpList
@@ -312,30 +312,30 @@ happy_n_nonterms = 24 :: Prelude.Int
 
 happyReduce_1 = happySpecReduce_1  0# happyReduction_1
 happyReduction_1 happy_x_1
-	 =  case happyOutTok happy_x_1 of { (PT _ (TV happy_var_1)) -> 
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
 	happyIn4
-		 (AbsGramatyka.Ident happy_var_1
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.Ident (tokenText happy_var_1))
 	)}
 
 happyReduce_2 = happySpecReduce_1  1# happyReduction_2
 happyReduction_2 happy_x_1
-	 =  case happyOutTok happy_x_1 of { (PT _ (TI happy_var_1)) -> 
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
 	happyIn5
-		 ((read happy_var_1) :: Integer
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), (read (tokenText happy_var_1)) :: Integer)
 	)}
 
 happyReduce_3 = happySpecReduce_1  2# happyReduction_3
 happyReduction_3 happy_x_1
-	 =  case happyOutTok happy_x_1 of { (PT _ (TL happy_var_1)) -> 
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
 	happyIn6
-		 (happy_var_1
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), ((\(PT _ (TL s)) -> s) happy_var_1))
 	)}
 
 happyReduce_4 = happySpecReduce_1  3# happyReduction_4
 happyReduction_4 happy_x_1
 	 =  case happyOut9 happy_x_1 of { (HappyWrap9 happy_var_1) -> 
 	happyIn7
-		 (AbsGramatyka.Program happy_var_1
+		 ((fst happy_var_1, AbsGramatyka.Program (fst happy_var_1) (snd happy_var_1))
 	)}
 
 happyReduce_5 = happyReduce 4# 4# happyReduction_5
@@ -344,11 +344,12 @@ happyReduction_5 (happy_x_4 `HappyStk`
 	happy_x_2 `HappyStk`
 	happy_x_1 `HappyStk`
 	happyRest)
-	 = case happyOut16 happy_x_2 of { (HappyWrap16 happy_var_2) -> 
+	 = case happyOutTok happy_x_1 of { happy_var_1 -> 
+	case happyOut16 happy_x_2 of { (HappyWrap16 happy_var_2) -> 
 	case happyOut15 happy_x_3 of { (HappyWrap15 happy_var_3) -> 
 	happyIn8
-		 (AbsGramatyka.VarDef happy_var_2 happy_var_3
-	) `HappyStk` happyRest}}
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.VarDef (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)) (snd happy_var_2) (snd happy_var_3))
+	) `HappyStk` happyRest}}}
 
 happyReduce_6 = happyReduce 6# 4# happyReduction_6
 happyReduction_6 (happy_x_6 `HappyStk`
@@ -363,14 +364,14 @@ happyReduction_6 (happy_x_6 `HappyStk`
 	case happyOut11 happy_x_4 of { (HappyWrap11 happy_var_4) -> 
 	case happyOut12 happy_x_6 of { (HappyWrap12 happy_var_6) -> 
 	happyIn8
-		 (AbsGramatyka.FnDef happy_var_1 happy_var_2 happy_var_4 happy_var_6
+		 ((fst happy_var_1, AbsGramatyka.FnDef (fst happy_var_1) (snd happy_var_1) (snd happy_var_2) (snd happy_var_4) (snd happy_var_6))
 	) `HappyStk` happyRest}}}}
 
 happyReduce_7 = happySpecReduce_1  5# happyReduction_7
 happyReduction_7 happy_x_1
 	 =  case happyOut8 happy_x_1 of { (HappyWrap8 happy_var_1) -> 
 	happyIn9
-		 ((:[]) happy_var_1
+		 ((fst happy_var_1, (:[]) (snd happy_var_1))
 	)}
 
 happyReduce_8 = happySpecReduce_2  5# happyReduction_8
@@ -379,7 +380,7 @@ happyReduction_8 happy_x_2
 	 =  case happyOut8 happy_x_1 of { (HappyWrap8 happy_var_1) -> 
 	case happyOut9 happy_x_2 of { (HappyWrap9 happy_var_2) -> 
 	happyIn9
-		 ((:) happy_var_1 happy_var_2
+		 ((fst happy_var_1, (:) (snd happy_var_1) (snd happy_var_2))
 	)}}
 
 happyReduce_9 = happySpecReduce_2  6# happyReduction_9
@@ -388,29 +389,30 @@ happyReduction_9 happy_x_2
 	 =  case happyOut16 happy_x_1 of { (HappyWrap16 happy_var_1) -> 
 	case happyOut4 happy_x_2 of { (HappyWrap4 happy_var_2) -> 
 	happyIn10
-		 (AbsGramatyka.Arg happy_var_1 happy_var_2
+		 ((fst happy_var_1, AbsGramatyka.Arg (fst happy_var_1) (snd happy_var_1) (snd happy_var_2))
 	)}}
 
 happyReduce_10 = happySpecReduce_3  6# happyReduction_10
 happyReduction_10 happy_x_3
 	happy_x_2
 	happy_x_1
-	 =  case happyOut16 happy_x_2 of { (HappyWrap16 happy_var_2) -> 
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	case happyOut16 happy_x_2 of { (HappyWrap16 happy_var_2) -> 
 	case happyOut4 happy_x_3 of { (HappyWrap4 happy_var_3) -> 
 	happyIn10
-		 (AbsGramatyka.ArgVar happy_var_2 happy_var_3
-	)}}
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.ArgVar (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)) (snd happy_var_2) (snd happy_var_3))
+	)}}}
 
 happyReduce_11 = happySpecReduce_0  7# happyReduction_11
 happyReduction_11  =  happyIn11
-		 ([]
+		 ((AbsGramatyka.BNFC'NoPosition, [])
 	)
 
 happyReduce_12 = happySpecReduce_1  7# happyReduction_12
 happyReduction_12 happy_x_1
 	 =  case happyOut10 happy_x_1 of { (HappyWrap10 happy_var_1) -> 
 	happyIn11
-		 ((:[]) happy_var_1
+		 ((fst happy_var_1, (:[]) (snd happy_var_1))
 	)}
 
 happyReduce_13 = happySpecReduce_3  7# happyReduction_13
@@ -420,21 +422,22 @@ happyReduction_13 happy_x_3
 	 =  case happyOut10 happy_x_1 of { (HappyWrap10 happy_var_1) -> 
 	case happyOut11 happy_x_3 of { (HappyWrap11 happy_var_3) -> 
 	happyIn11
-		 ((:) happy_var_1 happy_var_3
+		 ((fst happy_var_1, (:) (snd happy_var_1) (snd happy_var_3))
 	)}}
 
 happyReduce_14 = happySpecReduce_3  8# happyReduction_14
 happyReduction_14 happy_x_3
 	happy_x_2
 	happy_x_1
-	 =  case happyOut13 happy_x_2 of { (HappyWrap13 happy_var_2) -> 
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	case happyOut13 happy_x_2 of { (HappyWrap13 happy_var_2) -> 
 	happyIn12
-		 (AbsGramatyka.Block happy_var_2
-	)}
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.Block (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)) (snd happy_var_2))
+	)}}
 
 happyReduce_15 = happySpecReduce_0  9# happyReduction_15
 happyReduction_15  =  happyIn13
-		 ([]
+		 ((AbsGramatyka.BNFC'NoPosition, [])
 	)
 
 happyReduce_16 = happySpecReduce_2  9# happyReduction_16
@@ -443,20 +446,21 @@ happyReduction_16 happy_x_2
 	 =  case happyOut14 happy_x_1 of { (HappyWrap14 happy_var_1) -> 
 	case happyOut13 happy_x_2 of { (HappyWrap13 happy_var_2) -> 
 	happyIn13
-		 ((:) happy_var_1 happy_var_2
+		 ((fst happy_var_1, (:) (snd happy_var_1) (snd happy_var_2))
 	)}}
 
 happyReduce_17 = happySpecReduce_1  10# happyReduction_17
 happyReduction_17 happy_x_1
-	 =  happyIn14
-		 (AbsGramatyka.Empty
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn14
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.Empty (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_18 = happySpecReduce_1  10# happyReduction_18
 happyReduction_18 happy_x_1
 	 =  case happyOut12 happy_x_1 of { (HappyWrap12 happy_var_1) -> 
 	happyIn14
-		 (AbsGramatyka.BStmt happy_var_1
+		 ((fst happy_var_1, AbsGramatyka.BStmt (fst happy_var_1) (snd happy_var_1))
 	)}
 
 happyReduce_19 = happySpecReduce_3  10# happyReduction_19
@@ -466,7 +470,7 @@ happyReduction_19 happy_x_3
 	 =  case happyOut16 happy_x_1 of { (HappyWrap16 happy_var_1) -> 
 	case happyOut15 happy_x_2 of { (HappyWrap15 happy_var_2) -> 
 	happyIn14
-		 (AbsGramatyka.Decl happy_var_1 happy_var_2
+		 ((fst happy_var_1, AbsGramatyka.Decl (fst happy_var_1) (snd happy_var_1) (snd happy_var_2))
 	)}}
 
 happyReduce_20 = happyReduce 4# 10# happyReduction_20
@@ -478,17 +482,18 @@ happyReduction_20 (happy_x_4 `HappyStk`
 	 = case happyOut4 happy_x_1 of { (HappyWrap4 happy_var_1) -> 
 	case happyOut23 happy_x_3 of { (HappyWrap23 happy_var_3) -> 
 	happyIn14
-		 (AbsGramatyka.Ass happy_var_1 happy_var_3
+		 ((fst happy_var_1, AbsGramatyka.Ass (fst happy_var_1) (snd happy_var_1) (snd happy_var_3))
 	) `HappyStk` happyRest}}
 
 happyReduce_21 = happySpecReduce_3  10# happyReduction_21
 happyReduction_21 happy_x_3
 	happy_x_2
 	happy_x_1
-	 =  case happyOut23 happy_x_2 of { (HappyWrap23 happy_var_2) -> 
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	case happyOut23 happy_x_2 of { (HappyWrap23 happy_var_2) -> 
 	happyIn14
-		 (AbsGramatyka.Ret happy_var_2
-	)}
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.Ret (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)) (snd happy_var_2))
+	)}}
 
 happyReduce_22 = happyReduce 5# 10# happyReduction_22
 happyReduction_22 (happy_x_5 `HappyStk`
@@ -497,11 +502,12 @@ happyReduction_22 (happy_x_5 `HappyStk`
 	happy_x_2 `HappyStk`
 	happy_x_1 `HappyStk`
 	happyRest)
-	 = case happyOut23 happy_x_3 of { (HappyWrap23 happy_var_3) -> 
+	 = case happyOutTok happy_x_1 of { happy_var_1 -> 
+	case happyOut23 happy_x_3 of { (HappyWrap23 happy_var_3) -> 
 	case happyOut14 happy_x_5 of { (HappyWrap14 happy_var_5) -> 
 	happyIn14
-		 (AbsGramatyka.Cond happy_var_3 happy_var_5
-	) `HappyStk` happyRest}}
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.Cond (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)) (snd happy_var_3) (snd happy_var_5))
+	) `HappyStk` happyRest}}}
 
 happyReduce_23 = happyReduce 7# 10# happyReduction_23
 happyReduction_23 (happy_x_7 `HappyStk`
@@ -512,12 +518,13 @@ happyReduction_23 (happy_x_7 `HappyStk`
 	happy_x_2 `HappyStk`
 	happy_x_1 `HappyStk`
 	happyRest)
-	 = case happyOut23 happy_x_3 of { (HappyWrap23 happy_var_3) -> 
+	 = case happyOutTok happy_x_1 of { happy_var_1 -> 
+	case happyOut23 happy_x_3 of { (HappyWrap23 happy_var_3) -> 
 	case happyOut14 happy_x_5 of { (HappyWrap14 happy_var_5) -> 
 	case happyOut14 happy_x_7 of { (HappyWrap14 happy_var_7) -> 
 	happyIn14
-		 (AbsGramatyka.CondElse happy_var_3 happy_var_5 happy_var_7
-	) `HappyStk` happyRest}}}
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.CondElse (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)) (snd happy_var_3) (snd happy_var_5) (snd happy_var_7))
+	) `HappyStk` happyRest}}}}
 
 happyReduce_24 = happyReduce 5# 10# happyReduction_24
 happyReduction_24 (happy_x_5 `HappyStk`
@@ -526,25 +533,26 @@ happyReduction_24 (happy_x_5 `HappyStk`
 	happy_x_2 `HappyStk`
 	happy_x_1 `HappyStk`
 	happyRest)
-	 = case happyOut23 happy_x_3 of { (HappyWrap23 happy_var_3) -> 
+	 = case happyOutTok happy_x_1 of { happy_var_1 -> 
+	case happyOut23 happy_x_3 of { (HappyWrap23 happy_var_3) -> 
 	case happyOut14 happy_x_5 of { (HappyWrap14 happy_var_5) -> 
 	happyIn14
-		 (AbsGramatyka.While happy_var_3 happy_var_5
-	) `HappyStk` happyRest}}
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.While (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)) (snd happy_var_3) (snd happy_var_5))
+	) `HappyStk` happyRest}}}
 
 happyReduce_25 = happySpecReduce_2  10# happyReduction_25
 happyReduction_25 happy_x_2
 	happy_x_1
 	 =  case happyOut23 happy_x_1 of { (HappyWrap23 happy_var_1) -> 
 	happyIn14
-		 (AbsGramatyka.SExp happy_var_1
+		 ((fst happy_var_1, AbsGramatyka.SExp (fst happy_var_1) (snd happy_var_1))
 	)}
 
 happyReduce_26 = happySpecReduce_1  11# happyReduction_26
 happyReduction_26 happy_x_1
 	 =  case happyOut4 happy_x_1 of { (HappyWrap4 happy_var_1) -> 
 	happyIn15
-		 (AbsGramatyka.NoInit happy_var_1
+		 ((fst happy_var_1, AbsGramatyka.NoInit (fst happy_var_1) (snd happy_var_1))
 	)}
 
 happyReduce_27 = happySpecReduce_3  11# happyReduction_27
@@ -554,52 +562,57 @@ happyReduction_27 happy_x_3
 	 =  case happyOut4 happy_x_1 of { (HappyWrap4 happy_var_1) -> 
 	case happyOut23 happy_x_3 of { (HappyWrap23 happy_var_3) -> 
 	happyIn15
-		 (AbsGramatyka.Init happy_var_1 happy_var_3
+		 ((fst happy_var_1, AbsGramatyka.Init (fst happy_var_1) (snd happy_var_1) (snd happy_var_3))
 	)}}
 
 happyReduce_28 = happySpecReduce_1  12# happyReduction_28
 happyReduction_28 happy_x_1
-	 =  happyIn16
-		 (AbsGramatyka.Int
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn16
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.Int (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_29 = happySpecReduce_1  12# happyReduction_29
 happyReduction_29 happy_x_1
-	 =  happyIn16
-		 (AbsGramatyka.Str
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn16
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.Str (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_30 = happySpecReduce_1  12# happyReduction_30
 happyReduction_30 happy_x_1
-	 =  happyIn16
-		 (AbsGramatyka.Bool
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn16
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.Bool (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_31 = happySpecReduce_1  13# happyReduction_31
 happyReduction_31 happy_x_1
 	 =  case happyOut4 happy_x_1 of { (HappyWrap4 happy_var_1) -> 
 	happyIn17
-		 (AbsGramatyka.EVar happy_var_1
+		 ((fst happy_var_1, AbsGramatyka.EVar (fst happy_var_1) (snd happy_var_1))
 	)}
 
 happyReduce_32 = happySpecReduce_1  13# happyReduction_32
 happyReduction_32 happy_x_1
 	 =  case happyOut5 happy_x_1 of { (HappyWrap5 happy_var_1) -> 
 	happyIn17
-		 (AbsGramatyka.ELitInt happy_var_1
+		 ((fst happy_var_1, AbsGramatyka.ELitInt (fst happy_var_1) (snd happy_var_1))
 	)}
 
 happyReduce_33 = happySpecReduce_1  13# happyReduction_33
 happyReduction_33 happy_x_1
-	 =  happyIn17
-		 (AbsGramatyka.ELitTrue
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn17
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.ELitTrue (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_34 = happySpecReduce_1  13# happyReduction_34
 happyReduction_34 happy_x_1
-	 =  happyIn17
-		 (AbsGramatyka.ELitFalse
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn17
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.ELitFalse (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_35 = happyReduce 4# 13# happyReduction_35
 happyReduction_35 (happy_x_4 `HappyStk`
@@ -610,46 +623,49 @@ happyReduction_35 (happy_x_4 `HappyStk`
 	 = case happyOut4 happy_x_1 of { (HappyWrap4 happy_var_1) -> 
 	case happyOut24 happy_x_3 of { (HappyWrap24 happy_var_3) -> 
 	happyIn17
-		 (AbsGramatyka.EApp happy_var_1 happy_var_3
+		 ((fst happy_var_1, AbsGramatyka.EApp (fst happy_var_1) (snd happy_var_1) (snd happy_var_3))
 	) `HappyStk` happyRest}}
 
 happyReduce_36 = happySpecReduce_1  13# happyReduction_36
 happyReduction_36 happy_x_1
 	 =  case happyOut6 happy_x_1 of { (HappyWrap6 happy_var_1) -> 
 	happyIn17
-		 (AbsGramatyka.EString happy_var_1
+		 ((fst happy_var_1, AbsGramatyka.EString (fst happy_var_1) (snd happy_var_1))
 	)}
 
 happyReduce_37 = happySpecReduce_3  13# happyReduction_37
 happyReduction_37 happy_x_3
 	happy_x_2
 	happy_x_1
-	 =  case happyOut23 happy_x_2 of { (HappyWrap23 happy_var_2) -> 
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	case happyOut23 happy_x_2 of { (HappyWrap23 happy_var_2) -> 
 	happyIn17
-		 (happy_var_2
-	)}
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), (snd happy_var_2))
+	)}}
 
 happyReduce_38 = happySpecReduce_2  14# happyReduction_38
 happyReduction_38 happy_x_2
 	happy_x_1
-	 =  case happyOut17 happy_x_2 of { (HappyWrap17 happy_var_2) -> 
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	case happyOut17 happy_x_2 of { (HappyWrap17 happy_var_2) -> 
 	happyIn18
-		 (AbsGramatyka.Neg happy_var_2
-	)}
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.Neg (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)) (snd happy_var_2))
+	)}}
 
 happyReduce_39 = happySpecReduce_2  14# happyReduction_39
 happyReduction_39 happy_x_2
 	happy_x_1
-	 =  case happyOut17 happy_x_2 of { (HappyWrap17 happy_var_2) -> 
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	case happyOut17 happy_x_2 of { (HappyWrap17 happy_var_2) -> 
 	happyIn18
-		 (AbsGramatyka.Not happy_var_2
-	)}
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.Not (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)) (snd happy_var_2))
+	)}}
 
 happyReduce_40 = happySpecReduce_1  14# happyReduction_40
 happyReduction_40 happy_x_1
 	 =  case happyOut17 happy_x_1 of { (HappyWrap17 happy_var_1) -> 
 	happyIn18
-		 (happy_var_1
+		 ((fst happy_var_1, (snd happy_var_1))
 	)}
 
 happyReduce_41 = happySpecReduce_3  15# happyReduction_41
@@ -660,14 +676,14 @@ happyReduction_41 happy_x_3
 	case happyOut26 happy_x_2 of { (HappyWrap26 happy_var_2) -> 
 	case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (AbsGramatyka.EMul happy_var_1 happy_var_2 happy_var_3
+		 ((fst happy_var_1, AbsGramatyka.EMul (fst happy_var_1) (snd happy_var_1) (snd happy_var_2) (snd happy_var_3))
 	)}}}
 
 happyReduce_42 = happySpecReduce_1  15# happyReduction_42
 happyReduction_42 happy_x_1
 	 =  case happyOut18 happy_x_1 of { (HappyWrap18 happy_var_1) -> 
 	happyIn19
-		 (happy_var_1
+		 ((fst happy_var_1, (snd happy_var_1))
 	)}
 
 happyReduce_43 = happySpecReduce_3  16# happyReduction_43
@@ -678,14 +694,14 @@ happyReduction_43 happy_x_3
 	case happyOut25 happy_x_2 of { (HappyWrap25 happy_var_2) -> 
 	case happyOut19 happy_x_3 of { (HappyWrap19 happy_var_3) -> 
 	happyIn20
-		 (AbsGramatyka.EAdd happy_var_1 happy_var_2 happy_var_3
+		 ((fst happy_var_1, AbsGramatyka.EAdd (fst happy_var_1) (snd happy_var_1) (snd happy_var_2) (snd happy_var_3))
 	)}}}
 
 happyReduce_44 = happySpecReduce_1  16# happyReduction_44
 happyReduction_44 happy_x_1
 	 =  case happyOut19 happy_x_1 of { (HappyWrap19 happy_var_1) -> 
 	happyIn20
-		 (happy_var_1
+		 ((fst happy_var_1, (snd happy_var_1))
 	)}
 
 happyReduce_45 = happySpecReduce_3  17# happyReduction_45
@@ -696,14 +712,14 @@ happyReduction_45 happy_x_3
 	case happyOut27 happy_x_2 of { (HappyWrap27 happy_var_2) -> 
 	case happyOut20 happy_x_3 of { (HappyWrap20 happy_var_3) -> 
 	happyIn21
-		 (AbsGramatyka.ERel happy_var_1 happy_var_2 happy_var_3
+		 ((fst happy_var_1, AbsGramatyka.ERel (fst happy_var_1) (snd happy_var_1) (snd happy_var_2) (snd happy_var_3))
 	)}}}
 
 happyReduce_46 = happySpecReduce_1  17# happyReduction_46
 happyReduction_46 happy_x_1
 	 =  case happyOut20 happy_x_1 of { (HappyWrap20 happy_var_1) -> 
 	happyIn21
-		 (happy_var_1
+		 ((fst happy_var_1, (snd happy_var_1))
 	)}
 
 happyReduce_47 = happySpecReduce_3  18# happyReduction_47
@@ -713,14 +729,14 @@ happyReduction_47 happy_x_3
 	 =  case happyOut21 happy_x_1 of { (HappyWrap21 happy_var_1) -> 
 	case happyOut22 happy_x_3 of { (HappyWrap22 happy_var_3) -> 
 	happyIn22
-		 (AbsGramatyka.EAnd happy_var_1 happy_var_3
+		 ((fst happy_var_1, AbsGramatyka.EAnd (fst happy_var_1) (snd happy_var_1) (snd happy_var_3))
 	)}}
 
 happyReduce_48 = happySpecReduce_1  18# happyReduction_48
 happyReduction_48 happy_x_1
 	 =  case happyOut21 happy_x_1 of { (HappyWrap21 happy_var_1) -> 
 	happyIn22
-		 (happy_var_1
+		 ((fst happy_var_1, (snd happy_var_1))
 	)}
 
 happyReduce_49 = happySpecReduce_3  19# happyReduction_49
@@ -730,26 +746,26 @@ happyReduction_49 happy_x_3
 	 =  case happyOut22 happy_x_1 of { (HappyWrap22 happy_var_1) -> 
 	case happyOut23 happy_x_3 of { (HappyWrap23 happy_var_3) -> 
 	happyIn23
-		 (AbsGramatyka.EOr happy_var_1 happy_var_3
+		 ((fst happy_var_1, AbsGramatyka.EOr (fst happy_var_1) (snd happy_var_1) (snd happy_var_3))
 	)}}
 
 happyReduce_50 = happySpecReduce_1  19# happyReduction_50
 happyReduction_50 happy_x_1
 	 =  case happyOut22 happy_x_1 of { (HappyWrap22 happy_var_1) -> 
 	happyIn23
-		 (happy_var_1
+		 ((fst happy_var_1, (snd happy_var_1))
 	)}
 
 happyReduce_51 = happySpecReduce_0  20# happyReduction_51
 happyReduction_51  =  happyIn24
-		 ([]
+		 ((AbsGramatyka.BNFC'NoPosition, [])
 	)
 
 happyReduce_52 = happySpecReduce_1  20# happyReduction_52
 happyReduction_52 happy_x_1
 	 =  case happyOut23 happy_x_1 of { (HappyWrap23 happy_var_1) -> 
 	happyIn24
-		 ((:[]) happy_var_1
+		 ((fst happy_var_1, (:[]) (snd happy_var_1))
 	)}
 
 happyReduce_53 = happySpecReduce_3  20# happyReduction_53
@@ -759,74 +775,85 @@ happyReduction_53 happy_x_3
 	 =  case happyOut23 happy_x_1 of { (HappyWrap23 happy_var_1) -> 
 	case happyOut24 happy_x_3 of { (HappyWrap24 happy_var_3) -> 
 	happyIn24
-		 ((:) happy_var_1 happy_var_3
+		 ((fst happy_var_1, (:) (snd happy_var_1) (snd happy_var_3))
 	)}}
 
 happyReduce_54 = happySpecReduce_1  21# happyReduction_54
 happyReduction_54 happy_x_1
-	 =  happyIn25
-		 (AbsGramatyka.Plus
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn25
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.Plus (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_55 = happySpecReduce_1  21# happyReduction_55
 happyReduction_55 happy_x_1
-	 =  happyIn25
-		 (AbsGramatyka.Minus
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn25
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.Minus (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_56 = happySpecReduce_1  22# happyReduction_56
 happyReduction_56 happy_x_1
-	 =  happyIn26
-		 (AbsGramatyka.Times
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn26
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.Times (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_57 = happySpecReduce_1  22# happyReduction_57
 happyReduction_57 happy_x_1
-	 =  happyIn26
-		 (AbsGramatyka.Div
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn26
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.Div (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_58 = happySpecReduce_1  22# happyReduction_58
 happyReduction_58 happy_x_1
-	 =  happyIn26
-		 (AbsGramatyka.Mod
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn26
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.Mod (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_59 = happySpecReduce_1  23# happyReduction_59
 happyReduction_59 happy_x_1
-	 =  happyIn27
-		 (AbsGramatyka.LTH
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn27
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.LTH (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_60 = happySpecReduce_1  23# happyReduction_60
 happyReduction_60 happy_x_1
-	 =  happyIn27
-		 (AbsGramatyka.LE
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn27
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.LE (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_61 = happySpecReduce_1  23# happyReduction_61
 happyReduction_61 happy_x_1
-	 =  happyIn27
-		 (AbsGramatyka.GTH
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn27
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.GTH (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_62 = happySpecReduce_1  23# happyReduction_62
 happyReduction_62 happy_x_1
-	 =  happyIn27
-		 (AbsGramatyka.GE
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn27
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.GE (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_63 = happySpecReduce_1  23# happyReduction_63
 happyReduction_63 happy_x_1
-	 =  happyIn27
-		 (AbsGramatyka.EQU
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn27
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.EQU (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyReduce_64 = happySpecReduce_1  23# happyReduction_64
 happyReduction_64 happy_x_1
-	 =  happyIn27
-		 (AbsGramatyka.NE
-	)
+	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	happyIn27
+		 ((uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1), AbsGramatyka.NE (uncurry AbsGramatyka.BNFC'Position (tokenLineCol happy_var_1)))
+	)}
 
 happyNewToken action sts stk [] =
 	happyDoAction 36# notHappyAtAll action sts stk []
@@ -866,9 +893,9 @@ happyNewToken action sts stk (tk:tks) =
 	PT _ (TS _ 30) -> cont 30#;
 	PT _ (TS _ 31) -> cont 31#;
 	PT _ (TS _ 32) -> cont 32#;
-	PT _ (TV happy_dollar_dollar) -> cont 33#;
-	PT _ (TI happy_dollar_dollar) -> cont 34#;
-	PT _ (TL happy_dollar_dollar) -> cont 35#;
+	PT _ (TV _) -> cont 33#;
+	PT _ (TI _) -> cont 34#;
+	PT _ (TL _) -> cont 35#;
 	_ -> happyError' ((tk:tks), [])
 	}
 
@@ -884,7 +911,7 @@ happyReturn1 :: () => a -> b -> Err a
 happyReturn1 = \a tks -> (return) a
 happyError' :: () => ([(Token)], [Prelude.String]) -> Err a
 happyError' = (\(tokens, _) -> happyError tokens)
-pProgram tks = happySomeParser where
+pProgram_internal tks = happySomeParser where
  happySomeParser = happyThen (happyParse 0# tks) (\x -> happyReturn (let {(HappyWrap7 x') = happyOut7 x} in x'))
 
 happySeq = happyDontSeq
@@ -902,6 +929,11 @@ happyError ts = Left $
 
 myLexer :: String -> [Token]
 myLexer = tokens
+
+-- Entrypoints
+
+pProgram :: [Token] -> Err AbsGramatyka.Program
+pProgram = fmap snd . pProgram_internal
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
 -- $Id: GenericTemplate.hs,v 1.26 2005/01/14 14:47:22 simonmar Exp $
 

@@ -19,7 +19,7 @@ all : Interpreter
 # Rules for building the parser.
 
 AbsGramatyka.hs LexGramatyka.x ParGramatyka.y PrintGramatyka.hs TestGramatyka.hs: ../gramatyka.cf
-	bnfc --haskell ../gramatyka.cf
+	bnfc --haskell --functor ../gramatyka.cf
 
 %.hs : %.y
 	${HAPPY} ${HAPPY_OPTS} $<
