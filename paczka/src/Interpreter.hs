@@ -43,13 +43,19 @@ run p s =
     Right tree -> do
       putStrLn "\nParse Successful!" -- todo: remove
       case checkTypes tree of
-        Left err -> putStrLn err
+        Left err -> do
+          putStrLn err
+          showTree tree
         Right r -> do
           putStrLn $ "Type checking successful!" -- todo: remove
           eval tree
   where
   ts = myLexer s
   showPosToken ((l,c),t) = concat [ show l, ":", show c, "\t", show t ]
+
+showTree tree = do
+  putStrLn $ "\n[Abstract Syntax]\n\n" ++ show tree
+  putStrLn $ "\n[Linearized tree]\n\n" ++ printTree tree
 
 usage :: IO ()
 usage = do

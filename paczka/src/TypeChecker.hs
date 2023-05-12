@@ -115,13 +115,13 @@ checkStmt env funcs x = case x of
     Just t -> (env, checkExprWithType env funcs pos t expr)
   AbsGramatyka.Cond pos expr stmt -> case checkExpr env funcs expr of
     Left err -> (env, Left err)
-    Right t -> (env, if t == Bool then snd $ checkStmt env funcs stmt else Left $ "Type mismatch at " ++ show pos ++ ". Expected Bool" ++ ", got " ++ show t)
+    Right t -> (env, if t == Bool then snd $ checkStmt env funcs stmt else Left $ "Type mismatch at " ++ show pos ++ ". Expected Bool" ++ ", got " ++ show t ++ " - [checkStmt@1]")
   AbsGramatyka.CondElse pos expr stmt1 stmt2 -> case checkExpr env funcs expr of
     Left err -> (env, Left err)
-    Right t -> (env, if t == Bool then foldResults $ map snd [checkStmt env funcs stmt1, checkStmt env funcs stmt2] else Left $ "Type mismatch at " ++ show pos ++ ". Expected Bool" ++ ", got " ++ show t)
+    Right t -> (env, if t == Bool then foldResults $ map snd [checkStmt env funcs stmt1, checkStmt env funcs stmt2] else Left $ "Type mismatch at " ++ show pos ++ ". Expected Bool" ++ ", got " ++ show t ++ " - [checkStmt@2]")
   AbsGramatyka.While pos expr stmt -> case checkExpr env funcs expr of
     Left err -> (env, Left err)
-    Right t -> (env, if t == Bool then snd $ checkStmt env funcs stmt else Left $ "Type mismatch at " ++ show pos ++ ". Expected Bool" ++ ", got " ++ show t)
+    Right t -> (env, if t == Bool then snd $ checkStmt env funcs stmt else Left $ "Type mismatch at " ++ show pos ++ ". Expected Bool" ++ ", got " ++ show t ++ " - [checkStmt@3]")
   AbsGramatyka.SExp _ expr -> (env, checkExpr env funcs expr)
 
 checkItem :: Show a => Env -> Funcs -> AbsGramatyka.Item' a -> Result
@@ -135,12 +135,12 @@ checkItemWithType env funcs pos type_ item = let
   in case checkItem env funcs item of
   Left err -> Left err
   Right Void -> Right t
-  Right t' -> if t' == t then Right t else Left $ "Type mismatch at " ++ show pos ++ ". Expected " ++ show type_ ++ ", got " ++ show t
+  Right t' -> if t' == t then Right t else Left $ "Type mismatch at " ++ show pos ++ ". Expected " ++ show type_ ++ ", got " ++ show t ++ " - [checkItemWithType]"
 
 checkIdentWithType :: Show a => a -> AbsGramatyka.Ident -> Type -> Env -> Result
 checkIdentWithType pos x type_ env = case Map.lookup x env of
-    Nothing -> Left $ "Undeclared variable " ++ show x ++ " at " ++ show pos
-    Just t -> if t == type_ then Right Void else Left $ "Type mismatch at " ++ show pos ++ ". Expected " ++ show t ++ ", got " ++ show type_
+    Nothing -> Left $ "Undeclared variable " ++ show x ++ " at " ++ show pos ++ " - [checkIdentWithType@1]"
+    Just t -> if t == type_ then Right Void else Left $ "Type mismatch at " ++ show pos ++ ". Expected " ++ show t ++ ", got " ++ show type_ ++ " - [checkIdentWithType@2]"
 
 mapType :: Show a => AbsGramatyka.Type' a -> Type
 mapType x = case x of
@@ -151,7 +151,7 @@ mapType x = case x of
 checkExpr :: Show a => Env -> Funcs -> AbsGramatyka.Expr' a -> Result
 checkExpr env funcs x = case x of
   AbsGramatyka.EVar _ ident -> case Map.lookup ident env of
-    Nothing -> Left $ "Undeclared variable " ++ show ident ++ " at " ++ show x
+    Nothing -> Left $ "Undeclared variable " ++ show ident ++ " at " ++ show x ++ " - [checkExpr]"
     Just t -> Right t
   AbsGramatyka.ELitInt _ integer -> Right Int
   AbsGramatyka.ELitTrue _ -> Right Bool
@@ -162,7 +162,7 @@ checkExpr env funcs x = case x of
   AbsGramatyka.Not pos expr -> checkExprWithType env funcs pos Bool expr
   AbsGramatyka.EMul pos expr1 mulop expr2 -> checkBinaryIntOp env funcs pos expr1 expr2
   AbsGramatyka.EAdd pos expr1 addop expr2 -> checkBinaryIntOp env funcs pos expr1 expr2
-  AbsGramatyka.ERel pos expr1 relop expr2 -> checkBinaryIntOp env funcs pos expr1 expr2
+  AbsGramatyka.ERel pos expr1 relop expr2 -> checkBinaryRelOp env funcs pos expr1 expr2
   AbsGramatyka.EAnd pos expr1 expr2 -> checkBinaryBoolOp env funcs pos expr1 expr2
   AbsGramatyka.EOr pos expr1 expr2 -> checkBinaryBoolOp env funcs pos expr1 expr2
 
@@ -173,12 +173,12 @@ checkApp env funcs pos ident exprs = case Map.lookup ident funcs of
     case foldResults $ map (\(arg, expr) -> checkExprWithType env funcs pos arg expr) $ zip args exprs of
       Left err -> Left err
       Right _ -> Right type_
-  else Left $ "Wrong number of arguments at " ++ show pos ++ ". Expected " ++ show (length args) ++ ", got " ++ show (length exprs)
+  else Left $ "Wrong number of arguments at " ++ show pos ++ ". Expected " ++ show (length args) ++ ", got " ++ show (length exprs) ++ " - [checkApp]"
 
 checkExprWithType :: Show a => Env -> Funcs -> a -> Type -> AbsGramatyka.Expr' a -> Result
 checkExprWithType env funcs pos type_ expr = case checkExpr env funcs expr of
   Left err -> Left err
-  Right t -> if t == type_ then Right t else Left $ "Type mismatch at " ++ show pos ++ ". Expected " ++ show type_ ++ ", got " ++ show t
+  Right t -> if t == type_ then Right t else Left $ "Type mismatch at " ++ show pos ++ ". Expected " ++ show type_ ++ ", got " ++ show t ++ " - [checkExprWithType]"
 
 checkBinaryIntOp :: Show a => Env -> Funcs -> a -> AbsGramatyka.Expr' a -> AbsGramatyka.Expr' a -> Result
 checkBinaryIntOp env funcs pos expr1 expr2 = case checkExpr env funcs expr1 of
@@ -186,8 +186,17 @@ checkBinaryIntOp env funcs pos expr1 expr2 = case checkExpr env funcs expr1 of
     Right t -> if t == Int then
       case checkExpr env funcs expr2 of
         Left err -> Left err
-        Right t -> if t == Int then Right Int else Left $ "Type mismatch at " ++ show pos ++ " expected Int, got " ++ show t
-    else Left $ "Type mismatch at " ++ show pos ++ " expected Int, got " ++ show t
+        Right t -> if t == Int then Right Int else Left $ "Type mismatch at " ++ show pos ++ " expected Int, got " ++ show t ++ " - [checkBinaryIntOp@1]"
+    else Left $ "Type mismatch at " ++ show pos ++ " expected Int, got " ++ show t ++ " - [checkBinaryIntOp@2]"
+
+checkBinaryRelOp :: Show a => Env -> Funcs -> a -> AbsGramatyka.Expr' a -> AbsGramatyka.Expr' a -> Result
+checkBinaryRelOp env funcs pos expr1 expr2 = case checkExpr env funcs expr1 of
+    Left err -> Left err
+    Right t -> if t == Int then
+      case checkExpr env funcs expr2 of
+        Left err -> Left err
+        Right t -> if t == Int then Right Bool else Left $ "Type mismatch at " ++ show pos ++ " expected Int, got " ++ show t ++ " - [checkBinaryRelOp@1]"
+    else Left $ "Type mismatch at " ++ show pos ++ " expected Int, got " ++ show t ++ " - [checkBinaryRelOp@2]"
 
 checkBinaryBoolOp :: Show a => Env -> Funcs -> a -> AbsGramatyka.Expr' a -> AbsGramatyka.Expr' a -> Result
 checkBinaryBoolOp env funcs pos expr1 expr2 = case checkExpr env funcs expr1 of
@@ -195,5 +204,5 @@ checkBinaryBoolOp env funcs pos expr1 expr2 = case checkExpr env funcs expr1 of
     Right t -> if t == Bool then
       case checkExpr env funcs expr2 of
         Left err -> Left err
-        Right t -> if t == Bool then Right Bool else Left $ "Type mismatch at " ++ show pos ++ " expected Bool, got " ++ show t
-    else Left $ "Type mismatch at " ++ show pos ++ " expected Bool, got " ++ show t
+        Right t -> if t == Bool then Right Bool else Left $ "Type mismatch at " ++ show pos ++ " expected Bool, got " ++ show t ++ " - [checkBinaryBoolOp@1]"
+    else Left $ "Type mismatch at " ++ show pos ++ " expected Bool, got " ++ show t ++ " - [checkBinaryBoolOp@2]"
