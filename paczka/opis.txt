@@ -34,4 +34,4 @@ Zmiany
 
 - usunięto produkcję VRet
 - stringi są nieporównywalne
-- identyfikator `__return_type__` jest zarezerwowany
+- identyfikator `__return_type__` jest zarezerwowany (BNFC nie parsuje identyfikatorów zaczynających się od podłogi)

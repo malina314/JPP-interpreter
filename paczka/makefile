@@ -9,6 +9,9 @@ main:
 test:
 	./test.sh
 
+simple_test:
+	./interpreter good/04-print
+
 # todo: clean
 clean:
 	rm -f *.o *.hi interpreter

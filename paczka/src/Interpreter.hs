@@ -6,7 +6,7 @@ import Prelude
   , Int, (>)
   , String, (++), concat, unlines
   , Show, show
-  , IO, (>>), (>>=), mapM_, putStrLn
+  , IO, (>>), (>>=), mapM_, putStrLn, putStr
   , FilePath
   , getContents, readFile
   )
@@ -49,7 +49,15 @@ run p s =
           showTree tree
         Right r -> do
           putStrLn $ "Type checking successful!" -- todo: remove
-          eval tree
+          case eval tree of
+            Left err -> do
+              putStrLn "Evaluation failed!"
+              putStrLn err
+              showTree tree
+            Right output -> do
+              putStrLn $ "Evaluation successful!" -- todo: remove
+              putStr $ output
+              putStr $ "\n" -- todo: remove
   where
   ts = myLexer s
   showPosToken ((l,c),t) = concat [ show l, ":", show c, "\t", show t ]
