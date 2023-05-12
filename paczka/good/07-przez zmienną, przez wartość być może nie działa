@@ -1,0 +1,24 @@
+int foo(var int a, var int b, var int c) {
+    b = a;
+    return b;
+}
+
+int bar(int a, int b, int c) {
+    b = a;
+    return b;
+}
+
+int foobar(int a, var int a1, int b, var int b1, int c, var int c1, ) {
+    b = a;
+    return b;
+}
+
+int main() {
+    int a = 42;
+    int b = 0;
+    printInt(b);
+    foo(a, b);
+    printInt(b);
+
+    return 0;
+}

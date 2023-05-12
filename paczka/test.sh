@@ -1,3 +1,12 @@
 #!/bin/bash
 
-./interpreter "../declaration/przyklady/03-zmienne,przypisanie"
+for file in good/*
+do
+    echo "Testing $file"
+    ./interpreter "$file"
+    if [ $? -ne 0 ]; then
+        echo "Error"
+        exit 1
+    fi
+    echo "-------------------"
+done

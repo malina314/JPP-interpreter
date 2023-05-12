@@ -1,5 +1,3 @@
-// Ten przykład zawiera (chyba) wszystkie możliwe konstrukcje składniowe języka.
-
 global int a = 42;
 global bool b;
 global string c = "hello";

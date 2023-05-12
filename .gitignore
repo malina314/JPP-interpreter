@@ -12,3 +12,4 @@ paczka/src/*.info
 paczka/src/*.sh
 paczka/src/interpreter
 paczka/src/TestGramatyka*
+experiments/x
