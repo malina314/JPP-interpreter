@@ -32,31 +32,29 @@ checkTypes = checkProgram
 failure :: Show a => a -> Result
 failure x = Left $ "Undefined case: " ++ show x
 
+foldResults :: [Result] -> Result
+foldResults [] = Right Void
+foldResults (x:xs) = case x of
+  Left err -> Left err
+  Right Void -> foldResults xs
+
 -- checkProgram :: Show a => Store -> Env -> Funcs -> AbsGramatyka.Program' a -> Result
 checkProgram :: Show a => AbsGramatyka.Program' a -> Result
 checkProgram x = case x of
    AbsGramatyka.Program _ topdefs -> let
-    env = typeGlobalVars topdefs
+    env = typeGlobalVars topdefs Map.empty
     funcs = typeFuncs topdefs
     funcs' = Map.union funcs (Map.fromList [(AbsGramatyka.Ident "printInt", (Int, [Int])), (AbsGramatyka.Ident "printString", (Int, [Str])), (AbsGramatyka.Ident "printBool", (Bool, [Bool]))]) -- todo: redeklaracje nie są dozwolone
     in foldResults $ map (checkTopDef env funcs') topdefs
 
-typeGlobalVar :: Show a => AbsGramatyka.TopDef' a -> Env
-typeGlobalVar x = case x of
-  AbsGramatyka.VarDef pos type_ item -> Map.insert (getIdent item) (mapType type_) Map.empty
-  AbsGramatyka.FnDef _ type_ ident args block -> Map.empty
+typeGlobalVars :: Show a => [AbsGramatyka.TopDef' a] -> Env -> Env
+typeGlobalVars [] env = env
+typeGlobalVars (x:xs) env = typeGlobalVars xs $ typeVar x env
 
-getIdent :: Show a => AbsGramatyka.Item' a -> AbsGramatyka.Ident
-getIdent x = case x of
-  AbsGramatyka.NoInit _ ident -> ident
-  AbsGramatyka.Init _ ident _ -> ident
-
-typeGlobalVars :: Show a => [AbsGramatyka.TopDef' a] -> Env
-typeGlobalVars [] = Map.empty
-typeGlobalVars (x:xs) = let
-  env = typeGlobalVar x
-  env' = typeGlobalVars xs
-  in Map.union env env'
+typeVar :: Show a => AbsGramatyka.TopDef' a -> Env -> Env
+typeVar x env = case x of
+  AbsGramatyka.VarDef pos type_ item -> Map.insert (getIdent item) (mapType type_) env
+  AbsGramatyka.FnDef _ type_ ident args block -> env
 
 typeFunc :: Show a => AbsGramatyka.TopDef' a -> Funcs
 typeFunc x = case x of
@@ -70,58 +68,73 @@ typeFuncs (x:xs) = let
   funcs' = typeFuncs xs
   in Map.union funcs funcs' -- todo: redeklaracje nie są dozwolone
 
+getIdent :: Show a => AbsGramatyka.Item' a -> AbsGramatyka.Ident
+getIdent x = case x of
+  AbsGramatyka.NoInit _ ident -> ident
+  AbsGramatyka.Init _ ident _ -> ident
+
 getFuncRetType :: Show a => AbsGramatyka.TopDef' a -> Type
 getFuncRetType x = case x of
   AbsGramatyka.FnDef _ type_ ident args block -> mapType type_
 
 getFuncArgsTypes :: Show a => AbsGramatyka.TopDef' a -> [Type]
 getFuncArgsTypes x = case x of
-  AbsGramatyka.FnDef _ type_ ident args block -> map typeArg args
+  AbsGramatyka.FnDef _ type_ ident args block -> map getArgType args
+
+getArgType :: Show a => AbsGramatyka.Arg' a -> Type
+getArgType x = case x of
+  AbsGramatyka.Arg _ type_ ident -> mapType type_
+  AbsGramatyka.ArgVar _ type_ ident -> mapType type_
+
+typeArg :: Show a => AbsGramatyka.Arg' a -> Env -> Env
+typeArg x env = case x of
+  AbsGramatyka.Arg _ type_ ident -> Map.insert ident (mapType type_) env
+  AbsGramatyka.ArgVar _ type_ ident -> Map.insert ident (mapType type_) env
+
+typeArgs :: Show a => [AbsGramatyka.Arg' a] -> Env -> Env
+typeArgs [] env = env
+typeArgs (x:xs) env = typeArgs xs $ typeArg x env
 
 checkTopDef :: Show a => Env -> Funcs -> AbsGramatyka.TopDef' a -> Result
 checkTopDef env funcs x = case x of
   AbsGramatyka.VarDef pos type_ item -> Right Void
-  AbsGramatyka.FnDef _ type_ ident args block -> checkBlock block -- todo: wrzucić args do env
+  AbsGramatyka.FnDef _ type_ ident args block -> let
+    env' = typeArgs args env
+    in checkBlock env' funcs block
 
-typeArg :: Show a => AbsGramatyka.Arg' a -> Type
-typeArg x = case x of
-  AbsGramatyka.Arg _ type_ ident -> mapType type_
-  AbsGramatyka.ArgVar _ type_ ident -> mapType type_
+checkBlock :: Show a => Env -> Funcs -> AbsGramatyka.Block' a -> Result
+checkBlock env funcs x = case x of
+  AbsGramatyka.Block _ stmts -> snd $ checkStmts env funcs stmts
 
-checkArg :: Show a => AbsGramatyka.Arg' a -> Result
-checkArg x = case x of
-  AbsGramatyka.Arg _ type_ ident -> Right $ mapType type_ -- todo: potencjalnie ident trzeba zapisać w stanie
-  AbsGramatyka.ArgVar _ type_ ident -> Right $ mapType type_ -- todo: potencjalnie ident trzeba zapisać w stanie
+checkStmts :: Show a => Env -> Funcs -> [AbsGramatyka.Stmt' a] -> (Env, Result)
+checkStmts env funcs [] = (env, Right Void)
+checkStmts env funcs (x:xs) = let
+  (env', res) = checkStmt env funcs x
+  in case res of
+  Left err -> (env', Left err)
+  Right _ -> checkStmts env' funcs xs
 
-checkBlock :: Show a => AbsGramatyka.Block' a -> Result
-checkBlock x = case x of
-  AbsGramatyka.Block _ stmts -> foldResults $ map checkStmt stmts
-
-foldResults :: [Result] -> Result
-foldResults [] = Right Void
-foldResults (x:xs) = case x of
-  Left err -> Left err
-  Right Void -> foldResults xs
-
-checkStmt :: Show a => AbsGramatyka.Stmt' a -> Result
-checkStmt x = case x of
-  AbsGramatyka.Empty _ -> Right Void
-  AbsGramatyka.BStmt _ block -> checkBlock block
-  AbsGramatyka.Decl pos type_ item -> checkItemWithType pos type_ item
+checkStmt :: Show a => Env -> Funcs -> AbsGramatyka.Stmt' a -> (Env, Result)
+checkStmt env funcs x = case x of
+  AbsGramatyka.Empty _ -> (env, Right Void)
+  AbsGramatyka.BStmt _ block -> (env, checkBlock env funcs block)
+  AbsGramatyka.Decl pos type_ item -> case checkItemWithType pos type_ item of
+    Left err -> (env, Left err)
+    Right t -> (Map.insert (getIdent item) t env, Right Void)
   AbsGramatyka.Ass pos ident expr -> case checkExpr expr of
-    Left err -> Left err
-    Right t -> checkIdentWithType pos ident t
-  AbsGramatyka.Ret _ expr -> failure x -- todo: sprawdzić czy return jest zgodny z typem funckji
+    Left err -> (env, Left err)
+    Right t -> (env, checkIdentWithType pos ident t)
+  AbsGramatyka.Ret _ expr -> (env, failure x) -- todo: sprawdzić czy return jest zgodny z typem funckji
   AbsGramatyka.Cond pos expr stmt -> case checkExpr expr of
-    Left err -> Left err
-    Right t -> if t == Bool then checkStmt stmt else Left $ "Type mismatch at " ++ show pos ++ ". Expected Bool" ++ ", got " ++ show t
+    Left err -> (env, Left err)
+    Right t -> (env, if t == Bool then snd $ checkStmt env funcs stmt else Left $ "Type mismatch at " ++ show pos ++ ". Expected Bool" ++ ", got " ++ show t)
   AbsGramatyka.CondElse pos expr stmt1 stmt2 -> case checkExpr expr of
-    Left err -> Left err
-    Right t -> if t == Bool then foldResults [checkStmt stmt1, checkStmt stmt2] else Left $ "Type mismatch at " ++ show pos ++ ". Expected Bool" ++ ", got " ++ show t
+    Left err -> (env, Left err)
+    Right t -> (env, if t == Bool then foldResults $ map snd [checkStmt env funcs stmt1, checkStmt env funcs stmt2] else Left $ "Type mismatch at " ++ show pos ++ ". Expected Bool" ++ ", got " ++ show t)
   AbsGramatyka.While pos expr stmt -> case checkExpr expr of
-    Left err -> Left err
-    Right t -> if t == Bool then checkStmt stmt else Left $ "Type mismatch at " ++ show pos ++ ". Expected Bool" ++ ", got " ++ show t
-  AbsGramatyka.SExp _ expr -> checkExpr expr
+    Left err -> (env, Left err)
+    Right t -> (env, if t == Bool then snd $ checkStmt env funcs stmt else Left $ "Type mismatch at " ++ show pos ++ ". Expected Bool" ++ ", got " ++ show t)
+  AbsGramatyka.SExp _ expr -> (env, checkExpr expr)
 
 checkItem :: Show a => AbsGramatyka.Item' a -> Result
 checkItem x = case x of
