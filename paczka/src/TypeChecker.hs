@@ -16,8 +16,9 @@ type Result = Either ErrT OkT
 -- type Env = Map.Map AbsGramatyka.Ident Loc
 -- type Funcs = Map.Map AbsGramatyka.Ident (Type, [Type], Env, AbsGramatyka.Block)
 type Loc = Int
-type Store = Map.Map Loc Type
-type Env = Map.Map AbsGramatyka.Ident Loc
+-- type Store = Map.Map Loc Type
+-- type Env = Map.Map AbsGramatyka.Ident Loc
+type Env = Map.Map AbsGramatyka.Ident Type
 type Funcs = Map.Map AbsGramatyka.Ident (Type, [Type])
 
 checkTypes :: AbsGramatyka.Program -> Result
@@ -35,29 +36,27 @@ failure x = Left $ "Undefined case: " ++ show x
 checkProgram :: Show a => AbsGramatyka.Program' a -> Result
 checkProgram x = case x of
    AbsGramatyka.Program _ topdefs -> let
-    (_, store, env) = typeGlobalVars 0 topdefs
+    env = typeGlobalVars topdefs
     funcs = typeFuncs topdefs
-    funcs' = Map.union funcs (Map.fromList [(AbsGramatyka.Ident "printInt", (Int, [Int])), (AbsGramatyka.Ident "printString", (Int, [Str])), (AbsGramatyka.Ident "printBool", (Bool, [Bool]))])
-    in failure x
+    funcs' = Map.union funcs (Map.fromList [(AbsGramatyka.Ident "printInt", (Int, [Int])), (AbsGramatyka.Ident "printString", (Int, [Str])), (AbsGramatyka.Ident "printBool", (Bool, [Bool]))]) -- todo: redeklaracje nie są dozwolone
+    in foldResults $ map (checkTopDef env funcs') topdefs
 
-typeGlobalVar :: Show a => Int -> AbsGramatyka.TopDef' a -> (Int, Store, Env)
-typeGlobalVar newloc x = case x of
-  AbsGramatyka.VarDef pos type_ item -> let
-    ident = getIdent item
-    in (newloc + 1, Map.insert newloc (mapType type_) Map.empty, Map.insert ident newloc Map.empty)
-  AbsGramatyka.FnDef _ type_ ident args block -> (newloc, Map.empty, Map.empty)
+typeGlobalVar :: Show a => AbsGramatyka.TopDef' a -> Env
+typeGlobalVar x = case x of
+  AbsGramatyka.VarDef pos type_ item -> Map.insert (getIdent item) (mapType type_) Map.empty
+  AbsGramatyka.FnDef _ type_ ident args block -> Map.empty
 
 getIdent :: Show a => AbsGramatyka.Item' a -> AbsGramatyka.Ident
 getIdent x = case x of
   AbsGramatyka.NoInit _ ident -> ident
   AbsGramatyka.Init _ ident _ -> ident
 
-typeGlobalVars :: Show a => Int -> [AbsGramatyka.TopDef' a] -> (Int, Store, Env)
-typeGlobalVars newloc [] = (newloc, Map.empty, Map.empty)
-typeGlobalVars newloc (x:xs) = let
-  (newloc', store, env) = typeGlobalVar newloc x
-  (newloc'', store', env') = typeGlobalVars newloc' xs
-  in (newloc'', Map.union store store', Map.union env env') -- todo: redeklaracje nie są dozwolone
+typeGlobalVars :: Show a => [AbsGramatyka.TopDef' a] -> Env
+typeGlobalVars [] = Map.empty
+typeGlobalVars (x:xs) = let
+  env = typeGlobalVar x
+  env' = typeGlobalVars xs
+  in Map.union env env'
 
 typeFunc :: Show a => AbsGramatyka.TopDef' a -> Funcs
 typeFunc x = case x of
@@ -79,9 +78,9 @@ getFuncArgsTypes :: Show a => AbsGramatyka.TopDef' a -> [Type]
 getFuncArgsTypes x = case x of
   AbsGramatyka.FnDef _ type_ ident args block -> map typeArg args
 
-checkTopDef :: Show a => AbsGramatyka.TopDef' a -> Result
-checkTopDef x = case x of
-  AbsGramatyka.VarDef pos type_ item -> checkItemWithType pos type_ item
+checkTopDef :: Show a => Env -> Funcs -> AbsGramatyka.TopDef' a -> Result
+checkTopDef env funcs x = case x of
+  AbsGramatyka.VarDef pos type_ item -> Right Void
   AbsGramatyka.FnDef _ type_ ident args block -> checkBlock block -- todo: wrzucić args do env
 
 typeArg :: Show a => AbsGramatyka.Arg' a -> Type
