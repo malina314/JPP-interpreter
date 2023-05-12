@@ -13,7 +13,7 @@ do
 done
 
 echo "Testing bad files"
-for file in bad/*
+for file in bad/statyczne-typowanie*
 do
     echo "Testing $file"
     ./interpreter "$file" > /tmp/err

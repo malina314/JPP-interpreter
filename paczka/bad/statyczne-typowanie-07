@@ -1,0 +1,7 @@
+int foo(bool b) {
+    return b;
+}
+
+int main() {
+    foo(42);    
+}
