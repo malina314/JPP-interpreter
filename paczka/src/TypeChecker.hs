@@ -168,7 +168,7 @@ checkExpr env funcs x = case x of
   AbsGramatyka.ELitInt _ integer -> Right Int
   AbsGramatyka.ELitTrue _ -> Right Bool
   AbsGramatyka.ELitFalse _ -> Right Bool
-  AbsGramatyka.EApp _ ident exprs -> failure x -- todo: odczytać ze stanu funkcji i sprawdzić typy argumentów
+  AbsGramatyka.EApp pos ident exprs -> checkApp env funcs pos ident exprs
   AbsGramatyka.EString _ string -> Right Str
   AbsGramatyka.Neg pos expr -> checkExprWithType env funcs pos Int expr
   AbsGramatyka.Not pos expr -> checkExprWithType env funcs pos Bool expr
@@ -177,6 +177,15 @@ checkExpr env funcs x = case x of
   AbsGramatyka.ERel pos expr1 relop expr2 -> checkBinaryIntOp env funcs pos expr1 expr2
   AbsGramatyka.EAnd pos expr1 expr2 -> checkBinaryBoolOp env funcs pos expr1 expr2
   AbsGramatyka.EOr pos expr1 expr2 -> checkBinaryBoolOp env funcs pos expr1 expr2
+
+checkApp :: Show a => Env -> Funcs -> a -> AbsGramatyka.Ident -> [AbsGramatyka.Expr' a] -> Result
+checkApp env funcs pos ident exprs = case Map.lookup ident funcs of
+  Nothing -> Left $ "Undeclared function " ++ show ident ++ " at " ++ show pos
+  Just (type_, args) -> if length args == length exprs then
+    case foldResults $ map (\(arg, expr) -> checkExprWithType env funcs pos arg expr) $ zip args exprs of
+      Left err -> Left err
+      Right _ -> Right type_
+  else Left $ "Wrong number of arguments at " ++ show pos ++ ". Expected " ++ show (length args) ++ ", got " ++ show (length exprs)
 
 checkExprWithType :: Show a => Env -> Funcs -> a -> Type -> AbsGramatyka.Expr' a -> Result
 checkExprWithType env funcs pos type_ expr = case checkExpr env funcs expr of
