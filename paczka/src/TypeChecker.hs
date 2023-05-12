@@ -22,7 +22,7 @@ foldResults :: [Result] -> Result
 foldResults [] = Right Void
 foldResults (x:xs) = case x of
   Left err -> Left err
-  Right Void -> foldResults xs
+  Right _ -> foldResults xs
 
 checkProgram :: Show a => AbsGramatyka.Program' a -> Result
 checkProgram x = case x of

@@ -17,7 +17,7 @@ int main() {
     int a = 42;
     int b = 0;
     printInt(b);
-    foo(a, b);
+    foo(a, b, 0);
     printInt(b);
 
     return 0;
