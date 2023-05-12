@@ -33,5 +33,5 @@ Gramatyka zawiera jeden konflikt typu shift-reduce związany z instrukcją if-el
 Zmiany
 
 - usunięto produkcję VRet
-
-stringi są nieporównywalne
+- stringi są nieporównywalne
+- identyfikator `__return_type__` jest zarezerwowany

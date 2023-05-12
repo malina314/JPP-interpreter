@@ -45,7 +45,7 @@ run p s =
       case checkTypes tree of
         Left err -> putStrLn err
         Right r -> do
-          putStrLn $ "Type checking successful!" ++ show r -- todo: remove
+          putStrLn $ "Type checking successful!" -- todo: remove
           eval tree
   where
   ts = myLexer s

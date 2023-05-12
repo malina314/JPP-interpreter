@@ -100,7 +100,8 @@ checkTopDef env funcs x = case x of
   AbsGramatyka.VarDef pos type_ item -> Right Void
   AbsGramatyka.FnDef _ type_ ident args block -> let
     env' = typeArgs args env
-    in checkBlock env' funcs block
+    env'' = Map.insert (AbsGramatyka.Ident "__return_type__") (mapType type_) env'
+    in checkBlock env'' funcs block
 
 checkBlock :: Show a => Env -> Funcs -> AbsGramatyka.Block' a -> Result
 checkBlock env funcs x = case x of
@@ -124,7 +125,9 @@ checkStmt env funcs x = case x of
   AbsGramatyka.Ass pos ident expr -> case checkExpr env funcs expr of
     Left err -> (env, Left err)
     Right t -> (env, checkIdentWithType pos ident t env)
-  AbsGramatyka.Ret _ expr -> (env, failure x) -- todo: sprawdzić czy return jest zgodny z typem funckji
+  AbsGramatyka.Ret pos expr -> case Map.lookup (AbsGramatyka.Ident "__return_type__") env of
+    Nothing -> (env, Left $ "Unexpected problem occured at " ++ show pos) -- this should never happen
+    Just t -> (env, checkExprWithType env funcs pos t expr)
   AbsGramatyka.Cond pos expr stmt -> case checkExpr env funcs expr of
     Left err -> (env, Left err)
     Right t -> (env, if t == Bool then snd $ checkStmt env funcs stmt else Left $ "Type mismatch at " ++ show pos ++ ". Expected Bool" ++ ", got " ++ show t)
