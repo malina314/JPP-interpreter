@@ -1,16 +1,31 @@
 module TypeChecker (checkTypes) where
 
 import qualified AbsGramatyka
+import qualified Data.Map as Map
 
-data Type = Int | Str | Bool | Void
+data Type = Int | Str | Bool | Void | Func (Type, [Type])
   deriving (Eq, Show)
 
 type ErrT = String
 type OkT = Type
 type Result = Either ErrT OkT
+-- type Loc = Int
+-- data Val = I Int | S String | B Bool
+--   deriving (Eq, Show)
+-- type Store = Map.Map Loc Val
+-- type Env = Map.Map AbsGramatyka.Ident Loc
+-- type Funcs = Map.Map AbsGramatyka.Ident (Type, [Type], Env, AbsGramatyka.Block)
+type Loc = Int
+type Store = Map.Map Loc Type
+type Env = Map.Map AbsGramatyka.Ident Loc
+type Funcs = Map.Map AbsGramatyka.Ident (Type, [Type], Env)
 
 checkTypes :: AbsGramatyka.Program -> Result
-checkTypes = checkProgram
+checkTypes = let
+  store = Map.empty
+  env = Map.empty
+  funcs = Map.empty
+  in checkProgram store env funcs
 
 failure :: Show a => a -> Result
 failure x = Left $ "Undefined case: " ++ show x
@@ -19,16 +34,28 @@ checkIdent :: AbsGramatyka.Ident -> Result
 checkIdent x = case x of
   AbsGramatyka.Ident string -> failure x -- todo: zapisać ident w stanie i sprawdzić czy nie jest już zadeklarowany
 
-checkProgram :: Show a => AbsGramatyka.Program' a -> Result
-checkProgram x = case x of
+checkProgram :: Show a => Store -> Env -> Funcs -> AbsGramatyka.Program' a -> Result
+checkProgram store env funcs x = case x of
   AbsGramatyka.Program _ topdefs -> failure x -- TODO przejść po topdefs i
                                               -- w jakimś stanie trzymać typy zmiennych i funkcji, a potem 
                                               -- sprawdzić typy w każdej funkcji
+
+-- returns type of topdef
+preCheckTopDef :: Show a => AbsGramatyka.TopDef' a -> Type
+preCheckTopDef x = case x of
+  AbsGramatyka.VarDef pos type_ item -> mapType type_
+  AbsGramatyka.FnDef _ type_ ident args block -> Func (mapType type_, map preCheckArg args)
+
 
 checkTopDef :: Show a => AbsGramatyka.TopDef' a -> Result
 checkTopDef x = case x of
   AbsGramatyka.VarDef pos type_ item -> checkItemWithType pos type_ item -- todo: potencjalnie ident trzeba zapisać w stanie
   AbsGramatyka.FnDef _ type_ ident args block -> failure x -- todo: potencjalnie ident trzeba zapisać w stanie
+
+preCheckArg :: Show a => AbsGramatyka.Arg' a -> Type
+preCheckArg x = case x of
+  AbsGramatyka.Arg _ type_ ident -> mapType type_
+  AbsGramatyka.ArgVar _ type_ ident -> mapType type_
 
 checkArg :: Show a => AbsGramatyka.Arg' a -> Result
 checkArg x = case x of
