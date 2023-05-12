@@ -9,25 +9,11 @@ data Type = Int | Str | Bool | Void | Func (Type, [Type])
 type ErrT = String
 type OkT = Type
 type Result = Either ErrT OkT
--- type Loc = Int
--- data Val = I Int | S String | B Bool
---   deriving (Eq, Show)
--- type Store = Map.Map Loc Val
--- type Env = Map.Map AbsGramatyka.Ident Loc
--- type Funcs = Map.Map AbsGramatyka.Ident (Type, [Type], Env, AbsGramatyka.Block)
-type Loc = Int
--- type Store = Map.Map Loc Type
--- type Env = Map.Map AbsGramatyka.Ident Loc
 type Env = Map.Map AbsGramatyka.Ident Type
 type Funcs = Map.Map AbsGramatyka.Ident (Type, [Type])
 
 checkTypes :: AbsGramatyka.Program -> Result
 checkTypes = checkProgram
--- checkTypes = let
---   store = Map.empty
---   env = Map.empty
---   funcs = Map.empty
---   in checkProgram store env funcs
 
 failure :: Show a => a -> Result
 failure x = Left $ "Undefined case: " ++ show x
@@ -38,7 +24,6 @@ foldResults (x:xs) = case x of
   Left err -> Left err
   Right Void -> foldResults xs
 
--- checkProgram :: Show a => Store -> Env -> Funcs -> AbsGramatyka.Program' a -> Result
 checkProgram :: Show a => AbsGramatyka.Program' a -> Result
 checkProgram x = case x of
    AbsGramatyka.Program _ topdefs -> let
