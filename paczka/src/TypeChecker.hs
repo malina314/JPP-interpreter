@@ -30,7 +30,12 @@ checkProgram x = case x of
     env = typeGlobalVars topdefs Map.empty
     funcs = typeFuncs topdefs
     funcs' = Map.union funcs (Map.fromList [(AbsGramatyka.Ident "printInt", (Int, [Int])), (AbsGramatyka.Ident "printString", (Int, [Str])), (AbsGramatyka.Ident "printBool", (Bool, [Bool]))]) -- todo: redeklaracje nie są dozwolone
-    in foldResults $ map (checkTopDef env funcs') topdefs
+    in checkMain funcs' >>= \_ -> foldResults $ map (checkTopDef env funcs') topdefs
+
+checkMain :: Funcs -> Result
+checkMain funcs = case Map.lookup (AbsGramatyka.Ident "main") funcs of
+  Nothing -> Left "No main function"
+  Just (type_, args) -> if type_ == Int && args == [] then Right Void else Left "Wrong main function type"
 
 typeGlobalVars :: Show a => [AbsGramatyka.TopDef' a] -> Env -> Env
 typeGlobalVars [] env = env

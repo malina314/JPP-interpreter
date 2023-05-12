@@ -44,6 +44,7 @@ run p s =
       putStrLn "\nParse Successful!" -- todo: remove
       case checkTypes tree of
         Left err -> do
+          putStrLn "Type checking failed!"
           putStrLn err
           showTree tree
         Right r -> do
