@@ -1,6 +1,26 @@
-global int a = printString("Hello world!");
-global int b = printString("Hello world!");
+// int main() {
+//     int a = 5;
+//     a = a + 1;
+//     printLnInt(a);
+//     while (a > 0) {
+//         a = a - 1;
+//         printLnInt(a);
+//     }
+//     return 1;
+// }
+
+global int a = 5;
+
+int foo() {
+    a = 6;
+    return bar() + a;
+}
+
+int bar() {
+    a = 7;
+    return a;
+}
 
 int main() {
-    printString("Hello world!");
+    return foo();
 }

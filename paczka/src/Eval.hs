@@ -173,7 +173,7 @@ evalPrint (store, env, localEnv, funcs, newloc, v, output) name val = case name 
 evalBlock :: Memory -> AbsGramatyka.Block -> Result
 evalBlock (store, env, localEnv, funcs, newloc, v, output) x = case x of
   AbsGramatyka.Block _ stmts -> evalStmts (store, env, localEnv, funcs, newloc, v, output) stmts >>=
-    \(_, _, _, _, _, v', output') -> Right (store, env, localEnv, funcs, newloc, v', output')
+    \(store', _, _, _, _, v', output') -> Right (store', env, localEnv, funcs, newloc, v', output')
 
 evalStmts :: Memory -> [AbsGramatyka.Stmt] -> Result
 evalStmts mem [] = Right mem
