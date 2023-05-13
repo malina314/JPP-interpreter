@@ -3,7 +3,7 @@ module Eval (eval) where
 import qualified AbsGramatyka
 import qualified Data.Map as Map
 
-data Value = I Int | S String | B Bool | Void
+data Value = I Int | S String | B Bool | Void | Return Value
   deriving (Eq, Show)
 
 data FuncBody = Code [AbsGramatyka.Arg] AbsGramatyka.Block | BuiltIn String
@@ -152,7 +152,8 @@ evalFunc :: Memory -> Ident -> [Value] -> Result
 evalFunc mem ident argsVals = let
   (_, _, _, funcs, _, _, _) = mem
   in case Map.lookup ident funcs of
-    Just (Code args block) -> evalBlock (makeLocalEnv mem args argsVals) block
+    Just (Code args block) -> evalBlock (makeLocalEnv mem args argsVals) block >>=
+      \(store, env, localEnv, funcs, newloc, Return v, output) -> Right (store, env, localEnv, funcs, newloc, v, output)
     Just (BuiltIn name) -> evalPrint mem name $ head argsVals
     Nothing -> failure "evalFunc" -- this should never happen
 
@@ -167,11 +168,14 @@ evalPrint (store, env, localEnv, funcs, newloc, v, output) name val = case name 
 
 evalBlock :: Memory -> AbsGramatyka.Block -> Result
 evalBlock (store, env, localEnv, funcs, newloc, v, output) x = case x of
-  AbsGramatyka.Block _ stmts -> evalStmts (store, env, localEnv, funcs, newloc, v, output) stmts >>= \(_, _, _, _, _, _, output') -> Right (store, env, localEnv, funcs, newloc, v, output')
+  AbsGramatyka.Block _ stmts -> evalStmts (store, env, localEnv, funcs, newloc, v, output) stmts >>=
+    \(_, _, _, _, _, v', output') -> Right (store, env, localEnv, funcs, newloc, v', output')
 
 evalStmts :: Memory -> [AbsGramatyka.Stmt] -> Result
 evalStmts mem [] = Right mem
-evalStmts mem (x:xs) = evalStmt mem x >>= \mem -> evalStmts mem xs
+evalStmts mem (x:xs) = evalStmt mem x >>= \(store, env, localEnv, funcs, newloc, v, output) -> case v of
+  Return _ -> Right (store, env, localEnv, funcs, newloc, v, output)
+  _ -> evalStmts mem xs
 
 evalStmt :: Memory -> AbsGramatyka.Stmt -> Result
 evalStmt mem x = case x of
@@ -182,7 +186,8 @@ evalStmt mem x = case x of
     (store, env, localEnv, funcs, newloc, v, output) = mem'
     store' = Map.insert (getIdentLoc ident env localEnv) v store
     in Right (store', env, localEnv, funcs, newloc, Void, output)
-  AbsGramatyka.Ret _ expr -> failure x
+  AbsGramatyka.Ret _ expr -> evalExpr mem expr >>= \(store, env, localEnv, funcs, newloc, v, output) ->
+    Right (store, env, localEnv, funcs, newloc, Return v, output)
   AbsGramatyka.Cond _ expr stmt -> evalExpr mem expr >>= \mem' -> let (_, _, _, _, _, B b, _) = mem' in
     if b then evalStmt mem' stmt else Right mem'
   AbsGramatyka.CondElse _ expr stmt1 stmt2 -> evalExpr mem expr >>= \mem' -> let (_, _, _, _, _, B b, _) = mem' in
