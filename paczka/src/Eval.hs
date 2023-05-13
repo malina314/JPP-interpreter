@@ -60,6 +60,17 @@ defaultVal x = case x of
   AbsGramatyka.Str _ -> S ""
   AbsGramatyka.Bool _ -> B False
 
+str :: Value -> String
+str (I x) = show x
+str (S x) = x
+str (B x) = show x
+str Void = ""
+
+isArg :: AbsGramatyka.Arg -> Bool
+isArg x = case x of
+  AbsGramatyka.Arg _ _ _ -> True
+  AbsGramatyka.ArgVar _ _ _ -> False
+
 -- (>>>>>>) :: Result -> (Memory -> Result) -> Result
 -- (>>>>>>) (Left err) _ = Left err
 -- (>>>>>>) (Right r) lambda = lambda r
@@ -108,6 +119,15 @@ initItem mem default_ x = case x of
   AbsGramatyka.Init _ ident expr -> evalExpr mem expr >>= \(store, env, localEnv, funcs, newloc, v, output) ->
     Right (Map.insert (getItemLoc x env) v store, env, localEnv, funcs, newloc, v, output)
 
+makeLocalEnv :: Memory -> [AbsGramatyka.Arg] -> [Value] -> Memory
+makeLocalEnv (store, env, _, funcs, newloc, _, output) args argsVals = let
+  (args', argsVals') = unzip $ map (\(a, v) -> (getArgName a, v)) $ filter (\(a, _) -> isArg a) $ zip args argsVals
+  n = length args'
+  store' = Map.union store $ Map.fromList $ zip [newloc..] argsVals'
+  localEnv' = Map.fromList $ zip args' [newloc..]
+  newloc' = newloc + n
+  in (store', env, localEnv', funcs, newloc', Void, output)
+
 
 -- eval functions
 
@@ -120,12 +140,28 @@ evalProgram x = case x of
     res = initVars (Map.empty, env, Map.empty, funcs', newloc, Void, "") topdefs
     in res >>= evalMain
 
-
-
-
 evalMain :: Memory -> Result
-evalMain = undefined
+evalMain mem = evalFunc mem "main" []
 
+evalFunc :: Memory -> Ident -> [Value] -> Result
+evalFunc mem ident argsVals = let
+  (_, _, _, funcs, _, _, _) = mem
+  in case Map.lookup ident funcs of
+    Just (Code args block) -> evalBlock (makeLocalEnv mem args argsVals) block
+    Just (BuiltIn name) -> evalPrint mem name $ head argsVals
+    Nothing -> failure "evalFunc" -- this should never happen
+
+evalPrint :: Memory -> Ident -> Value -> Result
+evalPrint (store, env, localEnv, funcs, newloc, v, output) name val = case name of
+  "printInt" -> Right (store, env, localEnv, funcs, newloc, I 0, output ++ str val)
+  "printString" -> Right (store, env, localEnv, funcs, newloc, I 0, output ++ str val)
+  "printBool" -> Right (store, env, localEnv, funcs, newloc, I 0, output ++ str val)
+  "printLnInt" -> Right (store, env, localEnv, funcs, newloc, I 0, output ++ str val ++ "\n")
+  "printLnString" -> Right (store, env, localEnv, funcs, newloc, I 0, output ++ str val ++ "\n")
+  "printLnBool" -> Right (store, env, localEnv, funcs, newloc, I 0, output ++ str val ++ "\n")
+
+evalBlock :: Memory -> AbsGramatyka.Block -> Result -- todo: musi zwracac zewnetrzne środowisko
+evalBlock = undefined
 
 evalExpr :: Memory -> AbsGramatyka.Expr -> Result
 evalExpr = undefined
@@ -138,105 +174,6 @@ evalExpr = undefined
 
 
 
--- eval :: AbsGramatyka.Program -> Result
--- eval = evalProgram
-
--- failure :: Show a => a -> Result
--- failure x = Left $ "Undefined case: " ++ show x
-
--- evalProgram :: AbsGramatyka.Program -> Result
--- evalProgram x = case x of
---   AbsGramatyka.Program _ topdefs -> let
---     (env, newloc) = mapVarsToLocs topdefs Map.empty 0
---     funcs = mapFuncsToCode topdefs Map.empty
---     funcs' = Map.union funcs (Map.fromList [("printInt", BuiltIn "printInt"), ("printString", BuiltIn "printString"), ("printBool", BuiltIn "printBool")])
---     (store, ir) = initVars topdefs Map.empty env funcs
---     in ir >>>= evalMain store env funcs' newloc
-
--- (>>>=) :: InitResult -> Result -> Result
--- (>>>=) ir r = case ir of
---   Left err -> Left err
---   Right out -> case r of
---     Left err -> Left err
---     Right (val, out') -> Right (val, out ++ out')
-
--- mapVarsToLocs :: [AbsGramatyka.TopDef] -> Env -> Loc -> (Env, Loc)
--- mapVarsToLocs [] env newloc = (env, newloc)
--- mapVarsToLocs (x:xs) env newloc = let
---   (env', newloc') = mapVarToLoc x env newloc
---   in mapVarsToLocs xs env' newloc'
-
--- mapVarToLoc :: AbsGramatyka.TopDef -> Env -> Loc -> (Env, Loc)
--- mapVarToLoc x env newloc = case x of
---   AbsGramatyka.VarDef pos type_ item -> (Map.insert (getItemName item) newloc env, newloc + 1)
---   AbsGramatyka.FnDef _ type_ ident args block -> (env, newloc)
-
--- getIdent :: AbsGramatyka.Item -> AbsGramatyka.Ident
--- getIdent x = case x of
---   AbsGramatyka.NoInit _ ident -> ident
---   AbsGramatyka.Init _ ident _ -> ident
-
--- getIdentName :: AbsGramatyka.Ident -> Ident
--- getIdentName (AbsGramatyka.Ident name) = name
-
--- getItemName :: AbsGramatyka.Item -> Ident
--- getItemName = getIdentName . getIdent
-
--- getArgName :: AbsGramatyka.Arg -> Ident
--- getArgName (AbsGramatyka.Arg _ _ ident) = getIdentName ident
-
--- mapFuncsToCode :: [AbsGramatyka.TopDef] -> Funcs -> Funcs
--- mapFuncsToCode [] funcs = funcs
--- mapFuncsToCode (x:xs) funcs = mapFuncsToCode xs $ mapFuncToCode x funcs
-
--- mapFuncToCode :: AbsGramatyka.TopDef -> Funcs -> Funcs
--- mapFuncToCode x funcs = case x of
---   AbsGramatyka.VarDef pos type_ item -> funcs
---   AbsGramatyka.FnDef pos type_ ident args block -> Map.insert (getIdentName ident) (Code args block) funcs
-
--- initVars :: [AbsGramatyka.TopDef] -> Store -> Env -> Funcs -> (Store, InitResult)
--- initVars [] store _ _ = (store, Right "")
--- initVars (x:xs) store env funcs = let
---   (store', ir) = initVar x store env funcs
---   (store'', ir') = initVars xs store' env funcs
---   in (store'', ir +++ ir')
-
--- (+++) :: InitResult -> InitResult -> InitResult
--- (+++) (Left err) _ = Left err
--- (+++) _ (Left err) = Left err
--- (+++) (Right output) (Right output') = Right $ output ++ output'
-
--- initVar :: AbsGramatyka.TopDef -> Store -> Env -> Funcs -> (Store, InitResult)
--- initVar x store env funcs = case x of
---   AbsGramatyka.VarDef pos type_ item -> initItem item store env funcs $ defaultVal type_
---   AbsGramatyka.FnDef pos type_ ident args block -> (store, Right "")
-
--- initItem :: AbsGramatyka.Item -> Store -> Env -> Funcs -> Value -> (Store, InitResult)
--- initItem item store env funcs default_ = case item of
---   AbsGramatyka.NoInit pos ident -> (Map.insert (getItemLoc item env) default_ store, Right "")
---   AbsGramatyka.Init pos ident expr -> case snd $ evalExpr store env Map.empty funcs expr of -- todo: to nie obsługuje var args
---     Left err -> (store, Left err)
---     Right (val, output) -> let
---       loc = getItemLoc item env
---       in (Map.insert loc val store, Right output)
-
--- getItemLoc :: AbsGramatyka.Item -> Env -> Loc
--- getItemLoc = getVarLoc . getItemName
-
--- getVarLoc :: Ident -> Env -> Loc
--- getVarLoc ident env = case Map.lookup ident env of
---   Just loc -> loc
-
--- defaultVal :: AbsGramatyka.Type -> Value
--- defaultVal x = case x of
---   AbsGramatyka.Int _ -> I 0
---   AbsGramatyka.Str _ -> S ""
---   AbsGramatyka.Bool _ -> B False
-
--- -- todo: remove if not needed
--- -- resToInitResult :: Result -> InitResult
--- -- resToInitResult (Left err) = Left err
--- -- resToInitResult (Right (val, output)) = Right output
 
 -- evalMain :: Store -> Env -> Funcs -> Loc -> Result
 -- evalMain store env funcs newloc = failure "evalMain"
