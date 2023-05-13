@@ -1,21 +1,27 @@
-// int fib(int n) {
-//     if (n == 0) {
-//         return 0;
-//     }
-//     else if (n == 1) {
-//         return 1;
-//     }
-//     else {
-//         return fib(n - 1) + fib(n - 2);
-//     }
-// }
+int fib1(int n) {
+    if (n == 0) {
+        return 0;
+    }
+    else {
+        return fib1(n - 1) + 1;
+    }
+}
+
+int main() {
+    printLnInt(fib1(2000));
+
+    return 0;
+}
 
 int fib(int n) {
     if (n == 0) {
         return 0;
     }
+    else if (n == 1) {
+        return 1;
+    }
     else {
-        return fib(n - 1) + 1;
+        return fib(n - 1) + fib(n - 2);
     }
 }
 
@@ -25,19 +31,20 @@ int p(int n) {
 
 int main() {
     int a = 5;
-    // printLnInt(a - 1) + printLnInt(a - 2);
-    p(a) + p(a);
-    printLnInt(fib(2000));
+    p(a);
+    p(a);
+
+
+    printLnInt(fib(1));
+    printLnInt(fib(2));
+    printLnInt(fib(3));
+    printLnInt(fib(4));
+    printLnInt(fib(5));
+    printLnInt(fib(6));
+    printLnInt(fib(7));
+    printLnInt(fib(8));
+    printLnInt(fib(9));
+    printLnInt(fib(10));
 
     return 0;
 }
-
-// int foo(var int a) {
-//     printLnInt(a);
-// }
-
-// int main() {
-//     int x = 5;
-//     foo(var x);
-//     return 0;
-// }

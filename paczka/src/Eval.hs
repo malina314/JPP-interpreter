@@ -158,10 +158,10 @@ evalMain mem = evalFunc mem "main" []
 
 evalFunc :: Memory -> Ident -> [Value] -> Result
 evalFunc mem ident argsVals = let
-  (_, _, _, funcs, _, _, _) = mem
+  (_, env, localEnv, funcs, newloc, _, _) = mem
   in case Map.lookup ident funcs of
     Just (Code type_ args block) -> evalBlock (makeLocalEnv mem args argsVals) block >>=
-      \(store, env, localEnv, funcs, newloc, v, output) -> case v of
+      \(store, _, _, _, _, v, output) -> case v of
         Return val -> Right (store, env, localEnv, funcs, newloc, val, output)
         _ -> Right (store, env, localEnv, funcs, newloc, defaultVal type_, output)
     Just (BuiltIn name) -> evalPrint mem name $ head argsVals

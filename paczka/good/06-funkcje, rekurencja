@@ -17,7 +17,7 @@ int fib(int n) {
 }
 
 int main() {
-    // fib(5);
+    printLnInt(fib(8));
 
     return 0 + foo();
 }
