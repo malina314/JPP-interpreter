@@ -3,5 +3,5 @@ int foo(bool b) {
 }
 
 int main() {
-    foo(42);    
+    foo(42); // zły typ argumentu
 }

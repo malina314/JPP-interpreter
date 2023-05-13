@@ -1,7 +1,0 @@
-int foo(bool b, int a) {
-    return b;
-}
-
-int main() {
-    foo(42);    
-}
