@@ -29,8 +29,13 @@ checkProgram x = case x of
    AbsGramatyka.Program _ topdefs -> let
     env = typeGlobalVars topdefs Map.empty
     funcs = typeFuncs topdefs
-    funcs' = Map.union funcs (Map.fromList [(AbsGramatyka.Ident "printInt", (Int, [Int])), (AbsGramatyka.Ident "printString", (Int, [Str])), (AbsGramatyka.Ident "printBool", (Bool, [Bool]))]) -- todo: redeklaracje nie są dozwolone
+    funcs' = addBuiltIn funcs
     in checkMain funcs' >>= \_ -> foldResults $ map (checkTopDef env funcs') topdefs
+
+addBuiltIn :: Funcs -> Funcs
+addBuiltIn funcs = let
+  names = [("printInt", Int), ("printString", Str), ("printBool", Bool), ("printLnInt", Int), ("printLnString", Str), ("printLnBool", Bool)]
+  in Map.union funcs (Map.fromList $ map (\(n, t) -> (AbsGramatyka.Ident n, (Int, [t]))) names)
 
 checkMain :: Funcs -> Result
 checkMain funcs = case Map.lookup (AbsGramatyka.Ident "main") funcs of
