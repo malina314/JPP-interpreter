@@ -1,0 +1,6 @@
+global int a = printString("Hello world!");
+global int b = printString("Hello world!");
+
+int main() {
+    printString("Hello world!");
+}

@@ -10,7 +10,7 @@ test:
 	./test.sh
 
 simple_test:
-	./interpreter good/04-print
+	./interpreter good/simple
 
 # todo: clean
 clean:

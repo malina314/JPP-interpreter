@@ -179,7 +179,7 @@ evalStmts :: Memory -> [AbsGramatyka.Stmt] -> Result
 evalStmts mem [] = Right mem
 evalStmts mem (x:xs) = evalStmt mem x >>= \(store, env, localEnv, funcs, newloc, v, output) -> case v of
   Return _ -> Right (store, env, localEnv, funcs, newloc, v, output)
-  _ -> evalStmts mem xs
+  _ -> evalStmts (store, env, localEnv, funcs, newloc, v, output) xs
 
 evalStmt :: Memory -> AbsGramatyka.Stmt -> Result
 evalStmt mem x = case x of
