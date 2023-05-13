@@ -47,15 +47,17 @@ getItemName = getIdentName . getIdent
 getArgName :: AbsGramatyka.Arg -> Ident
 getArgName (AbsGramatyka.Arg _ _ ident) = getIdentName ident
 
-getIdentLoc :: AbsGramatyka.Ident -> Env -> Loc
+getIdentLoc :: AbsGramatyka.Ident -> Env -> Env -> Loc
 getIdentLoc = getVarLoc . getIdentName
 
-getItemLoc :: AbsGramatyka.Item -> Env -> Loc
+getItemLoc :: AbsGramatyka.Item -> Env -> Env -> Loc
 getItemLoc = getVarLoc . getItemName
 
-getVarLoc :: Ident -> Env -> Loc
-getVarLoc ident env = case Map.lookup ident env of
+getVarLoc :: Ident -> Env -> Env -> Loc
+getVarLoc ident env localEnv = case Map.lookup ident localEnv of
   Just loc -> loc
+  Nothing -> case Map.lookup ident env of
+    Just loc -> loc
 
 defaultVal :: AbsGramatyka.Type -> Value
 defaultVal x = case x of
@@ -118,9 +120,9 @@ initItem :: Memory -> Value -> AbsGramatyka.Item -> Result
 initItem mem default_ x = case x of
   AbsGramatyka.NoInit _ ident -> let 
     (store, env, localEnv, funcs, newloc, v, output) = mem
-    in Right (Map.insert (getItemLoc x env) default_ store, env, localEnv, funcs, newloc, v, output)
+    in Right (Map.insert (getItemLoc x env localEnv) default_ store, env, localEnv, funcs, newloc, v, output)
   AbsGramatyka.Init _ ident expr -> evalExpr mem expr >>= \(store, env, localEnv, funcs, newloc, v, output) ->
-    Right (Map.insert (getItemLoc x env) v store, env, localEnv, funcs, newloc, v, output)
+    Right (Map.insert (getItemLoc x env localEnv) v store, env, localEnv, funcs, newloc, v, output)
 
 makeLocalEnv :: Memory -> [AbsGramatyka.Arg] -> [Value] -> Memory
 makeLocalEnv (store, env, _, funcs, newloc, _, output) args argsVals = let
@@ -178,7 +180,7 @@ evalStmt mem x = case x of
   AbsGramatyka.Decl _ type_ item -> evalItem mem (defaultVal type_) item
   AbsGramatyka.Ass _ ident expr -> evalExpr mem expr >>= \mem' -> let
     (store, env, localEnv, funcs, newloc, v, output) = mem'
-    store' = Map.insert (getIdentLoc ident env) v store
+    store' = Map.insert (getIdentLoc ident env localEnv) v store
     in Right (store', env, localEnv, funcs, newloc, Void, output)
   AbsGramatyka.Ret _ expr -> failure x
   AbsGramatyka.Cond _ expr stmt -> evalExpr mem expr >>= \mem' -> let (_, _, _, _, _, B b, _) = mem' in
@@ -236,7 +238,7 @@ evalExpr = undefined
 -- --   AbsGramatyka.Bool _ -> Bool
 
 -- evalExpr :: Store -> Env -> Env -> Funcs -> AbsGramatyka.Expr -> (Store, Result)
--- evalExpr store env loaclEnv funcs x = (Map.empty, failure "evalExpr")
+-- evalExpr store env localEnv funcs x = (Map.empty, failure "evalExpr")
 
 -- -- evalExpr :: Env -> Funcs -> AbsGramatyka.Expr -> Result
 -- -- evalExpr env funcs x = case x of
