@@ -54,7 +54,7 @@ run p s =
               putStrLn "Evaluation failed!"
               putStrLn err
               showTree tree
-            Right output -> do
+            Right (_, output) -> do
               putStrLn $ "Evaluation successful!" -- todo: remove
               putStr $ output
               putStr $ "\n" -- todo: remove

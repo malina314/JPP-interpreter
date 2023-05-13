@@ -3,62 +3,58 @@ module Eval (eval) where
 import qualified AbsGramatyka
 import qualified Data.Map as Map
 
-type ErrT = String
-type OkT = String
-type Result = Either ErrT OkT
-
--- data Type = Int | Str | Bool | Void | Func (Type, [Type])
---   deriving (Eq, Show)
-
-type Loc = Int
-data Val = I Int | S String | B Bool
+data Value = I Int | S String | B Bool | Void
   deriving (Eq, Show)
-type Store = Map.Map Loc Val
+
+data FuncBody = Code AbsGramatyka.Block | BuiltIn String
+  deriving (Eq, Show)
+
+type Err = String
+type Output = String
+type Ok = (Value, Output)
+type Result = Either Err Ok
+type Loc = Int
+type Store = Map.Map Loc Value
 type Env = Map.Map AbsGramatyka.Ident Loc
-type Funcs = Map.Map AbsGramatyka.Ident (Env, AbsGramatyka.Block) -- Env is global env
+type Funcs = Map.Map AbsGramatyka.Ident FuncBody
 
 eval :: AbsGramatyka.Program -> Result
-eval _ = Right "OK"
+eval _ = Right (Void, "OK")
 
 failure :: Show a => a -> Result
 failure x = Left $ "Undefined case: " ++ show x
 
--- evalProgram :: Show a => AbsGramatyka.Program' a -> Result
--- evalProgram x = case x of
---    AbsGramatyka.Program _ topdefs -> let
---     env = typeGlobalVars topdefs Map.empty
---     funcs = typeFuncs topdefs
---     funcs' = Map.union funcs (Map.fromList [(AbsGramatyka.Ident "printInt", (Int, [Int])), (AbsGramatyka.Ident "printString", (Int, [Str])), (AbsGramatyka.Ident "printBool", (Bool, [Bool]))]) -- todo: redeklaracje nie są dozwolone
---     in evalMain funcs' >>= \_ -> foldResults $ map (evalTopDef env funcs') topdefs
+evalProgram :: Show a => AbsGramatyka.Program' a -> Result
+evalProgram x = case x of
+  AbsGramatyka.Program _ topdefs -> let
+    (env, _) = mapVarsToLocs topdefs Map.empty 0
+    funcs = Map.empty
+    store = Map.empty
+    in evalMain store env funcs
+
+mapVarsToLocs :: Show a => [AbsGramatyka.TopDef' a] -> Env -> Loc -> (Env, Loc)
+mapVarsToLocs [] env newloc = (env, newloc)
+mapVarsToLocs (x:xs) env newloc = let
+  (env', newloc') = mapVarToLoc x env newloc
+  in mapVarsToLocs xs env' newloc'
+
+mapVarToLoc :: Show a => AbsGramatyka.TopDef' a -> Env -> Loc -> (Env, Loc)
+mapVarToLoc x env newloc = case x of
+  AbsGramatyka.VarDef pos type_ item -> (Map.insert (getIdent item) newloc env, newloc + 1)
+  AbsGramatyka.FnDef _ type_ ident args block -> (env, newloc)
+
+getIdent :: Show a => AbsGramatyka.Item' a -> AbsGramatyka.Ident
+getIdent x = case x of
+  AbsGramatyka.NoInit _ ident -> ident
+  AbsGramatyka.Init _ ident _ -> ident
+
+evalMain :: Store -> Env -> Funcs -> Result
+evalMain store env funcs = failure "evalMain"
+-- evalMain store env funcs = case Map.lookup (AbsGramatyka.Ident "main") env of
+--   Nothing -> Left "No main function"
+--   Just loc -> evalBlock store env funcs (Code (AbsGramatyka.Block [] []))
 
 
--- -- evalProgram :: Show a => Store -> Env -> Funcs -> AbsGramatyka.Program' a -> Result
--- evalProgram :: Show a => AbsGramatyka.Program' a -> Result
--- evalProgram x = case x of
---    AbsGramatyka.Program _ topdefs -> let
---     (_, store, env) = typeGlobalVars 0 topdefs
---     funcs = typeFuncs topdefs
---     funcs' = Map.union funcs (Map.fromList [(AbsGramatyka.Ident "printInt", (Int, [Int])), (AbsGramatyka.Ident "printString", (Int, [Str])), (AbsGramatyka.Ident "printBool", (Bool, [Bool]))]) -- todo: redeklaracje nie są dozwolone
---     in foldResults $ map (evalTopDef store env funcs') topdefs
-
--- typeGlobalVar :: Show a => Int -> AbsGramatyka.TopDef' a -> (Int, Store, Env)
--- typeGlobalVar newloc x = case x of
---   AbsGramatyka.VarDef pos type_ item -> let
---     ident = getIdent item
---     in (newloc + 1, Map.insert newloc (mapType type_) Map.empty, Map.insert ident newloc Map.empty)
---   AbsGramatyka.FnDef _ type_ ident args block -> (newloc, Map.empty, Map.empty)
-
--- getIdent :: Show a => AbsGramatyka.Item' a -> AbsGramatyka.Ident
--- getIdent x = case x of
---   AbsGramatyka.NoInit _ ident -> ident
---   AbsGramatyka.Init _ ident _ -> ident
-
--- typeGlobalVars :: Show a => Int -> [AbsGramatyka.TopDef' a] -> (Int, Store, Env)
--- typeGlobalVars newloc [] = (newloc, Map.empty, Map.empty)
--- typeGlobalVars newloc (x:xs) = let
---   (newloc', store, env) = typeGlobalVar newloc x
---   (newloc'', store', env') = typeGlobalVars newloc' xs
---   in (newloc'', Map.union store store', Map.union env env') -- todo: redeklaracje nie są dozwolone
 
 -- typeFunc :: Show a => AbsGramatyka.TopDef' a -> Funcs
 -- typeFunc x = case x of
