@@ -198,6 +198,7 @@ instance Print (AbsGramatyka.Type' a) where
 instance Print (AbsGramatyka.Expr' a) where
   prt i = \case
     AbsGramatyka.EVar _ id_ -> prPrec i 6 (concatD [prt 0 id_])
+    AbsGramatyka.ERefVar _ id_ -> prPrec i 6 (concatD [doc (showString "var"), prt 0 id_])
     AbsGramatyka.ELitInt _ n -> prPrec i 6 (concatD [prt 0 n])
     AbsGramatyka.ELitTrue _ -> prPrec i 6 (concatD [doc (showString "true")])
     AbsGramatyka.ELitFalse _ -> prPrec i 6 (concatD [doc (showString "false")])

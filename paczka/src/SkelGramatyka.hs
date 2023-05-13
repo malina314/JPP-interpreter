@@ -63,6 +63,7 @@ transType x = case x of
 transExpr :: Show a => AbsGramatyka.Expr' a -> Result
 transExpr x = case x of
   AbsGramatyka.EVar _ ident -> failure x
+  AbsGramatyka.ERefVar _ ident -> failure x
   AbsGramatyka.ELitInt _ integer -> failure x
   AbsGramatyka.ELitTrue _ -> failure x
   AbsGramatyka.ELitFalse _ -> failure x

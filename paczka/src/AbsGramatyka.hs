@@ -60,6 +60,7 @@ data Type' a = Int a | Str a | Bool a
 type Expr = Expr' BNFC'Position
 data Expr' a
     = EVar a Ident
+    | ERefVar a Ident
     | ELitInt a Integer
     | ELitTrue a
     | ELitFalse a
@@ -148,6 +149,7 @@ instance HasPosition Type where
 instance HasPosition Expr where
   hasPosition = \case
     EVar p _ -> p
+    ERefVar p _ -> p
     ELitInt p _ -> p
     ELitTrue p -> p
     ELitFalse p -> p

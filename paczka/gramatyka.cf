@@ -56,6 +56,8 @@ Bool.      Type ::= "bool" ;
 
 EVar.      Expr6 ::= Ident ;
 
+ERefVar.   Expr6 ::= "var" Ident ;
+
 ELitInt.   Expr6 ::= Integer ;
 
 ELitTrue.  Expr6 ::= "true" ;
