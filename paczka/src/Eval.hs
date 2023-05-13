@@ -136,7 +136,7 @@ makeLocalEnv (store, env, _, funcs, newloc, _, output) args argsVals = let
   (args', argsVals') = unzip $ map (\(a, v) -> (getArgName a, v)) $ filter (\(a, _) -> isArg a) $ zip args argsVals
   (varArgs', varArgsLocs') = unzip $ map (\(a, Ref v) -> (getArgName a, v)) $ filter (\(a, _) -> isVarArg a) $ zip args argsVals
   n = length args'
-  store' = Map.union store $ Map.fromList $ zip [newloc..] argsVals'
+  store' = Map.fromList (zip [newloc..] argsVals') `Map.union` store
   localEnv' = Map.fromList (zip args' [newloc..]) `Map.union` Map.fromList (zip varArgs' varArgsLocs')
   newloc' = newloc + n
   in (store', env, localEnv', funcs, newloc', Void, output)

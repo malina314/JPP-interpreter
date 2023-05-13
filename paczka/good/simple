@@ -1,18 +1,3 @@
-int fib1(int n) {
-    if (n == 0) {
-        return 0;
-    }
-    else {
-        return fib1(n - 1) + 1;
-    }
-}
-
-int main() {
-    printLnInt(fib1(2000));
-
-    return 0;
-}
-
 int fib(int n) {
     if (n == 0) {
         return 0;
@@ -45,6 +30,7 @@ int main() {
     printLnInt(fib(8));
     printLnInt(fib(9));
     printLnInt(fib(10));
+    printLnInt(fib(28));
 
     return 0;
 }
