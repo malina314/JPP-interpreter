@@ -60,6 +60,9 @@ defaultVal x = case x of
   AbsGramatyka.Str _ -> S ""
   AbsGramatyka.Bool _ -> B False
 
+-- (>>>>>>) :: Result -> (Memory -> Result) -> Result
+-- (>>>>>>) (Left err) _ = Left err
+-- (>>>>>>) (Right r) lambda = lambda r
 
 -- auxiliary functions
 
@@ -77,7 +80,7 @@ mapVarsToLocs (x:xs) env newloc = let
 mapVarToLoc :: AbsGramatyka.TopDef -> Env -> Loc -> (Env, Loc)
 mapVarToLoc x env newloc = case x of
   AbsGramatyka.VarDef pos type_ item -> (Map.insert (getItemName item) newloc env, newloc + 1)
-  AbsGramatyka.FnDef _ type_ ident args block -> (env, newloc)
+  AbsGramatyka.FnDef _ _ _ _ _ -> (env, newloc)
 
 mapFuncsToCode :: [AbsGramatyka.TopDef] -> Funcs -> Funcs
 mapFuncsToCode [] funcs = funcs
@@ -85,8 +88,25 @@ mapFuncsToCode (x:xs) funcs = mapFuncsToCode xs $ mapFuncToCode x funcs
 
 mapFuncToCode :: AbsGramatyka.TopDef -> Funcs -> Funcs
 mapFuncToCode x funcs = case x of
-  AbsGramatyka.VarDef pos type_ item -> funcs
-  AbsGramatyka.FnDef pos type_ ident args block -> Map.insert (getIdentName ident) (Code args block) funcs
+  AbsGramatyka.VarDef _ _ _ -> funcs
+  AbsGramatyka.FnDef _ type_ ident args block -> Map.insert (getIdentName ident) (Code args block) funcs
+
+initVars :: Memory -> [AbsGramatyka.TopDef] -> Result
+initVars mem [] = Right mem
+initVars mem (x:xs) = initVar mem x >>= \mem -> initVars mem xs
+
+initVar :: Memory -> AbsGramatyka.TopDef -> Result
+initVar mem x = case x of
+  AbsGramatyka.VarDef _ type_ item -> initItem mem (defaultVal type_) item
+  AbsGramatyka.FnDef _ _ _ _ _ -> Right mem
+
+initItem :: Memory -> Value -> AbsGramatyka.Item -> Result
+initItem mem default_ x = case x of
+  AbsGramatyka.NoInit _ ident -> let 
+    (store, env, localEnv, funcs, newloc, v, output) = mem
+    in Right (Map.insert (getItemLoc x env) default_ store, env, localEnv, funcs, newloc, v, output)
+  AbsGramatyka.Init _ ident expr -> evalExpr mem expr >>= \(store, env, localEnv, funcs, newloc, v, output) ->
+    Right (Map.insert (getItemLoc x env) v store, env, localEnv, funcs, newloc, v, output)
 
 
 -- eval functions
@@ -97,17 +117,18 @@ evalProgram x = case x of
     (env, newloc) = mapVarsToLocs topdefs Map.empty 0
     funcs = mapFuncsToCode topdefs Map.empty
     funcs' = addBuiltIn funcs
-    -- (store, ir) = initVars topdefs Map.empty env funcs
-    in failure "evalProgram"
+    res = initVars (Map.empty, env, Map.empty, funcs', newloc, Void, "") topdefs
+    in res >>= evalMain
 
 
 
 
+evalMain :: Memory -> Result
+evalMain = undefined
 
 
-
-
-
+evalExpr :: Memory -> AbsGramatyka.Expr -> Result
+evalExpr = undefined
 
 
 
