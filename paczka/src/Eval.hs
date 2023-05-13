@@ -13,10 +13,11 @@ type Err = String
 type Output = String
 type Ok = (Value, Output)
 type Result = Either Err Ok
+type Ident = String
 type Loc = Int
 type Store = Map.Map Loc Value
-type Env = Map.Map AbsGramatyka.Ident Loc
-type Funcs = Map.Map AbsGramatyka.Ident FuncBody
+type Env = Map.Map Ident Loc
+type Funcs = Map.Map Ident FuncBody
 
 eval :: AbsGramatyka.Program -> Result
 eval _ = Right (Void, "OK")
@@ -24,29 +25,46 @@ eval _ = Right (Void, "OK")
 failure :: Show a => a -> Result
 failure x = Left $ "Undefined case: " ++ show x
 
-evalProgram :: Show a => AbsGramatyka.Program' a -> Result
+evalProgram :: AbsGramatyka.Program -> Result
 evalProgram x = case x of
   AbsGramatyka.Program _ topdefs -> let
     (env, _) = mapVarsToLocs topdefs Map.empty 0
-    funcs = Map.empty
+    funcs = mapFuncsToCode topdefs Map.empty
+    funcs' = Map.union funcs (Map.fromList [("printInt", BuiltIn "printInt"), ("printString", BuiltIn "printString"), ("printBool", BuiltIn "printBool")])
     store = Map.empty
     in evalMain store env funcs
 
-mapVarsToLocs :: Show a => [AbsGramatyka.TopDef' a] -> Env -> Loc -> (Env, Loc)
+mapVarsToLocs :: [AbsGramatyka.TopDef] -> Env -> Loc -> (Env, Loc)
 mapVarsToLocs [] env newloc = (env, newloc)
 mapVarsToLocs (x:xs) env newloc = let
   (env', newloc') = mapVarToLoc x env newloc
   in mapVarsToLocs xs env' newloc'
 
-mapVarToLoc :: Show a => AbsGramatyka.TopDef' a -> Env -> Loc -> (Env, Loc)
+mapVarToLoc :: AbsGramatyka.TopDef -> Env -> Loc -> (Env, Loc)
 mapVarToLoc x env newloc = case x of
-  AbsGramatyka.VarDef pos type_ item -> (Map.insert (getIdent item) newloc env, newloc + 1)
+  AbsGramatyka.VarDef pos type_ item -> (Map.insert (getItemName item) newloc env, newloc + 1)
   AbsGramatyka.FnDef _ type_ ident args block -> (env, newloc)
 
-getIdent :: Show a => AbsGramatyka.Item' a -> AbsGramatyka.Ident
+getIdent :: AbsGramatyka.Item -> AbsGramatyka.Ident
 getIdent x = case x of
   AbsGramatyka.NoInit _ ident -> ident
   AbsGramatyka.Init _ ident _ -> ident
+
+getIdentName :: AbsGramatyka.Ident -> Ident
+getIdentName (AbsGramatyka.Ident name) = name
+
+getItemName :: AbsGramatyka.Item -> Ident
+getItemName item = getIdentName $ getIdent item
+
+mapFuncsToCode :: [AbsGramatyka.TopDef] -> Funcs -> Funcs
+mapFuncsToCode [] funcs = funcs
+mapFuncsToCode (x:xs) funcs = mapFuncsToCode xs $ mapFuncToCode x funcs
+
+mapFuncToCode :: AbsGramatyka.TopDef -> Funcs -> Funcs
+mapFuncToCode x funcs = case x of
+  AbsGramatyka.VarDef pos type_ item -> funcs
+  AbsGramatyka.FnDef pos type_ ident args block -> Map.insert (getIdentName ident) (Code block) funcs
+
 
 evalMain :: Store -> Env -> Funcs -> Result
 evalMain store env funcs = failure "evalMain"
