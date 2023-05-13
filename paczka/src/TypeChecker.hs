@@ -161,7 +161,10 @@ mapType x = case x of
 checkExpr :: Show a => Env -> Funcs -> AbsGramatyka.Expr' a -> Result
 checkExpr env funcs x = case x of
   AbsGramatyka.EVar _ ident -> case Map.lookup ident env of
-    Nothing -> Left $ "Undeclared variable " ++ show ident ++ " at " ++ show x ++ " - [checkExpr]"
+    Nothing -> Left $ "Undeclared variable " ++ show ident ++ " at " ++ show x ++ " - [checkExpr@1]"
+    Just t -> Right t
+  AbsGramatyka.ERefVar _ ident -> case Map.lookup ident env of
+    Nothing -> Left $ "Undeclared variable " ++ show ident ++ " at " ++ show x ++ " - [checkExpr@2]"
     Just t -> Right t
   AbsGramatyka.ELitInt _ integer -> Right Int
   AbsGramatyka.ELitTrue _ -> Right Bool

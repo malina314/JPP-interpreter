@@ -4,7 +4,7 @@ import qualified AbsGramatyka
 import qualified Data.Map as Map
 import qualified Data.List as List
 
-data Value = I Integer | S String | B Bool | Void | Return Value | List [Value]
+data Value = I Integer | S String | B Bool | Void | Return Value | List [Value] | Ref Loc
   deriving (Eq, Show)
 
 data FuncBody = Code AbsGramatyka.Type [AbsGramatyka.Arg] AbsGramatyka.Block | BuiltIn String
@@ -47,6 +47,7 @@ getItemName = getIdentName . getIdent
 
 getArgName :: AbsGramatyka.Arg -> Ident
 getArgName (AbsGramatyka.Arg _ _ ident) = getIdentName ident
+getArgName (AbsGramatyka.ArgVar _ _ ident) = getIdentName ident
 
 getIdentLoc :: AbsGramatyka.Ident -> Env -> Env -> Loc
 getIdentLoc = getVarLoc . getIdentName
@@ -59,6 +60,7 @@ getVarLoc ident env localEnv = case Map.lookup ident localEnv of
   Just loc -> loc
   Nothing -> case Map.lookup ident env of
     Just loc -> loc
+    Nothing -> error $ "Variable " ++ ident ++ " not found!" -- this should never happen
 
 getValue :: Loc -> Store -> Value
 getValue loc store = case Map.lookup loc store of
@@ -80,6 +82,9 @@ isArg :: AbsGramatyka.Arg -> Bool
 isArg x = case x of
   AbsGramatyka.Arg _ _ _ -> True
   AbsGramatyka.ArgVar _ _ _ -> False
+
+isVarArg :: AbsGramatyka.Arg -> Bool
+isVarArg = not . isArg
 
 
 -- auxiliary functions
@@ -129,9 +134,10 @@ initItem mem default_ x = case x of
 makeLocalEnv :: Memory -> [AbsGramatyka.Arg] -> [Value] -> Memory
 makeLocalEnv (store, env, _, funcs, newloc, _, output) args argsVals = let
   (args', argsVals') = unzip $ map (\(a, v) -> (getArgName a, v)) $ filter (\(a, _) -> isArg a) $ zip args argsVals
+  (varArgs', varArgsLocs') = unzip $ map (\(a, Ref v) -> (getArgName a, v)) $ filter (\(a, _) -> isVarArg a) $ zip args argsVals
   n = length args'
   store' = Map.union store $ Map.fromList $ zip [newloc..] argsVals'
-  localEnv' = Map.fromList $ zip args' [newloc..]
+  localEnv' = Map.fromList (zip args' [newloc..]) `Map.union` Map.fromList (zip varArgs' varArgsLocs')
   newloc' = newloc + n
   in (store', env, localEnv', funcs, newloc', Void, output)
 
@@ -218,6 +224,7 @@ evalItem mem default_ x = case x of
 evalExpr :: Memory -> AbsGramatyka.Expr -> Result
 evalExpr (store, env, localEnv, funcs, newloc, v, output) x = case x of
   AbsGramatyka.EVar _ ident -> Right (store, env, localEnv, funcs, newloc, getValue (getIdentLoc ident env localEnv) store, output)
+  AbsGramatyka.ERefVar _ ident -> Right (store, env, localEnv, funcs, newloc, Ref (getIdentLoc ident env localEnv), output)
   AbsGramatyka.ELitInt _ integer -> Right (store, env, localEnv, funcs, newloc, I integer, output)
   AbsGramatyka.ELitTrue _ -> Right (store, env, localEnv, funcs, newloc, B True, output)
   AbsGramatyka.ELitFalse _ -> Right (store, env, localEnv, funcs, newloc, B False, output)
