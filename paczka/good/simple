@@ -1,36 +1,3 @@
-int fib(int n) {
-    if (n == 0) {
-        return 0;
-    }
-    else if (n == 1) {
-        return 1;
-    }
-    else {
-        return fib(n - 1) + fib(n - 2);
-    }
-}
-
-int p(int n) {
-    printLnInt(n - 1) + printLnInt(n - 2);
-}
-
 int main() {
-    int a = 5;
-    p(a);
-    p(a);
-
-
-    printLnInt(fib(1));
-    printLnInt(fib(2));
-    printLnInt(fib(3));
-    printLnInt(fib(4));
-    printLnInt(fib(5));
-    printLnInt(fib(6));
-    printLnInt(fib(7));
-    printLnInt(fib(8));
-    printLnInt(fib(9));
-    printLnInt(fib(10));
-    printLnInt(fib(28));
-
     return 0;
 }
