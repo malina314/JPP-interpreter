@@ -7,7 +7,7 @@ import qualified Data.List as List
 data Value = I Integer | S String | B Bool | Void | Return Value | List [Value]
   deriving (Eq, Show)
 
-data FuncBody = Code [AbsGramatyka.Arg] AbsGramatyka.Block | BuiltIn String
+data FuncBody = Code AbsGramatyka.Type [AbsGramatyka.Arg] AbsGramatyka.Block | BuiltIn String
   deriving (Eq, Show)
 
 type ErrorMsg = String
@@ -19,7 +19,7 @@ type Store = Map.Map Loc Value
 type Env = Map.Map Ident Loc
 type Funcs = Map.Map Ident FuncBody
 
-type Memory = (Store, Env, Env, Funcs, Loc, Value, OutputMsg) -- sotre, env, localEnv, funcs, newloc, last_return_value, output
+type Memory = (Store, Env, Env, Funcs, Loc, Value, OutputMsg) -- sotre, env, localEnv, funcs, newloc, return_value, output
 
 type Result = Either (ErrorMsg, OutputMsg) Memory
 
@@ -81,9 +81,6 @@ isArg x = case x of
   AbsGramatyka.Arg _ _ _ -> True
   AbsGramatyka.ArgVar _ _ _ -> False
 
--- (>>>>>>) :: Result -> (Memory -> Result) -> Result
--- (>>>>>>) (Left err) _ = Left err
--- (>>>>>>) (Right r) lambda = lambda r
 
 -- auxiliary functions
 
@@ -110,7 +107,7 @@ mapFuncsToCode (x:xs) funcs = mapFuncsToCode xs $ mapFuncToCode x funcs
 mapFuncToCode :: AbsGramatyka.TopDef -> Funcs -> Funcs
 mapFuncToCode x funcs = case x of
   AbsGramatyka.VarDef _ _ _ -> funcs
-  AbsGramatyka.FnDef _ type_ ident args block -> Map.insert (getIdentName ident) (Code args block) funcs
+  AbsGramatyka.FnDef _ type_ ident args block -> Map.insert (getIdentName ident) (Code type_ args block) funcs
 
 initVars :: Memory -> [AbsGramatyka.TopDef] -> Result
 initVars mem [] = Right mem
@@ -157,8 +154,10 @@ evalFunc :: Memory -> Ident -> [Value] -> Result
 evalFunc mem ident argsVals = let
   (_, _, _, funcs, _, _, _) = mem
   in case Map.lookup ident funcs of
-    Just (Code args block) -> evalBlock (makeLocalEnv mem args argsVals) block >>=
-      \(store, env, localEnv, funcs, newloc, Return v, output) -> Right (store, env, localEnv, funcs, newloc, v, output)
+    Just (Code type_ args block) -> evalBlock (makeLocalEnv mem args argsVals) block >>=
+      \(store, env, localEnv, funcs, newloc, v, output) -> case v of
+        Return val -> Right (store, env, localEnv, funcs, newloc, val, output)
+        _ -> Right (store, env, localEnv, funcs, newloc, defaultVal type_, output)
     Just (BuiltIn name) -> evalPrint mem name $ head argsVals
     Nothing -> failure "evalFunc" -- this should never happen
 

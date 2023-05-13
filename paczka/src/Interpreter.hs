@@ -57,6 +57,7 @@ run p s =
               showTree tree
             Right (_, _, _, _, _, v, output) -> do
               putStrLn $ "Evaluation successful!" -- todo: remove
+              putStrLn $ "Main exit code: " ++ show v -- todo: remove
               putStr $ output
               putStr $ "\n" -- todo: remove
   where
