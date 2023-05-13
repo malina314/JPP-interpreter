@@ -2,6 +2,7 @@ module TypeChecker (checkTypes) where
 
 import qualified AbsGramatyka
 import qualified Data.Map as Map
+import qualified Data.List as List
 
 data Type = Int | Str | Bool | Void | Func (Type, [Type])
   deriving (Eq, Show)
@@ -17,6 +18,12 @@ checkTypes = checkProgram
 
 failure :: Show a => a -> Result
 failure x = Left $ "Undefined case: " ++ show x
+
+findDup :: Eq a => [a] -> Maybe a
+findDup [] = Nothing
+findDup (x:xs) = case List.find ((==) x) xs of
+  Just y -> Just y
+  Nothing -> findDup xs
 
 foldResults :: [Result] -> Result
 foldResults [] = Right Void
@@ -68,6 +75,11 @@ getIdent x = case x of
   AbsGramatyka.NoInit _ ident -> ident
   AbsGramatyka.Init _ ident _ -> ident
 
+getArgIdent :: Show a => AbsGramatyka.Arg' a -> AbsGramatyka.Ident
+getArgIdent x = case x of
+  AbsGramatyka.Arg _ type_ ident -> ident
+  AbsGramatyka.ArgVar _ type_ ident -> ident
+
 getFuncRetType :: Show a => AbsGramatyka.TopDef' a -> Type
 getFuncRetType x = case x of
   AbsGramatyka.FnDef _ type_ ident args block -> mapType type_
@@ -96,7 +108,10 @@ checkTopDef env funcs x = case x of
   AbsGramatyka.FnDef _ type_ ident args block -> let
     env' = typeArgs args env
     env'' = Map.insert (AbsGramatyka.Ident "__return_type__") (mapType type_) env'
-    in checkBlock env'' funcs block
+    dup = findDup $ map getArgIdent args
+    in case dup of
+      Just x -> Left $ "Duplicate argument: " ++ show x
+      Nothing -> checkBlock env'' funcs block 
 
 checkBlock :: Show a => Env -> Funcs -> AbsGramatyka.Block' a -> Result
 checkBlock env funcs x = case x of
