@@ -47,6 +47,9 @@ getItemName = getIdentName . getIdent
 getArgName :: AbsGramatyka.Arg -> Ident
 getArgName (AbsGramatyka.Arg _ _ ident) = getIdentName ident
 
+getIdentLoc :: AbsGramatyka.Ident -> Env -> Loc
+getIdentLoc = getVarLoc . getIdentName
+
 getItemLoc :: AbsGramatyka.Item -> Env -> Loc
 getItemLoc = getVarLoc . getItemName
 
@@ -160,100 +163,52 @@ evalPrint (store, env, localEnv, funcs, newloc, v, output) name val = case name 
   "printLnString" -> Right (store, env, localEnv, funcs, newloc, I 0, output ++ str val ++ "\n")
   "printLnBool" -> Right (store, env, localEnv, funcs, newloc, I 0, output ++ str val ++ "\n")
 
-evalBlock :: Memory -> AbsGramatyka.Block -> Result -- todo: musi zwracac zewnetrzne środowisko
-evalBlock = undefined
+evalBlock :: Memory -> AbsGramatyka.Block -> Result
+evalBlock (store, env, localEnv, funcs, newloc, v, output) x = case x of
+  AbsGramatyka.Block _ stmts -> evalStmts (store, env, localEnv, funcs, newloc, v, output) stmts >>= \(_, _, _, _, _, _, output') -> Right (store, env, localEnv, funcs, newloc, v, output')
+
+evalStmts :: Memory -> [AbsGramatyka.Stmt] -> Result
+evalStmts mem [] = Right mem
+evalStmts mem (x:xs) = evalStmt mem x >>= \mem -> evalStmts mem xs
+
+evalStmt :: Memory -> AbsGramatyka.Stmt -> Result
+evalStmt mem x = case x of
+  AbsGramatyka.Empty _ -> Right mem
+  AbsGramatyka.BStmt _ block -> evalBlock mem block
+  AbsGramatyka.Decl _ type_ item -> evalItem mem (defaultVal type_) item
+  AbsGramatyka.Ass _ ident expr -> evalExpr mem expr >>= \mem' -> let
+    (store, env, localEnv, funcs, newloc, v, output) = mem'
+    store' = Map.insert (getIdentLoc ident env) v store
+    in Right (store', env, localEnv, funcs, newloc, Void, output)
+  AbsGramatyka.Ret _ expr -> failure x
+  AbsGramatyka.Cond _ expr stmt -> evalExpr mem expr >>= \mem' -> let (_, _, _, _, _, B b, _) = mem' in
+    if b then evalStmt mem' stmt else Right mem'
+  AbsGramatyka.CondElse _ expr stmt1 stmt2 -> evalExpr mem expr >>= \mem' -> let (_, _, _, _, _, B b, _) = mem' in
+    if b then evalStmt mem' stmt1 else evalStmt mem' stmt2
+  AbsGramatyka.While pos expr stmt -> evalExpr mem expr >>= \mem' -> let (_, _, _, _, _, B b, _) = mem' in
+    if b then evalStmts mem' [stmt, AbsGramatyka.While pos expr stmt] else Right mem'
+  AbsGramatyka.SExp _ expr -> evalExpr mem expr
+
+evalItem :: Memory -> Value -> AbsGramatyka.Item -> Result
+evalItem mem default_ x = case x of
+  AbsGramatyka.NoInit _ ident -> let
+    (store, env, localEnv, funcs, newloc, v, output) = mem
+    localEnv' = Map.insert (getIdentName ident) newloc localEnv
+    store' = Map.insert newloc default_ store
+    newloc' = newloc + 1
+    in Right (store', env, localEnv', funcs, newloc', Void, output)
+  AbsGramatyka.Init _ ident expr -> evalExpr mem expr >>= \mem' -> let
+    (store, env, localEnv, funcs, newloc, v, output) = mem'
+    localEnv' = Map.insert (getIdentName ident) newloc localEnv
+    store' = Map.insert newloc v store
+    newloc' = newloc + 1
+    in Right (store', env, localEnv', funcs, newloc', Void, output)
 
 evalExpr :: Memory -> AbsGramatyka.Expr -> Result
 evalExpr = undefined
 
-
-
-
-
 ------------------------------------------------------------------------------------------------------------------------
 
-
-
-
--- evalMain :: Store -> Env -> Funcs -> Loc -> Result
--- evalMain store env funcs newloc = failure "evalMain"
-
--- evalFunc :: Store -> Env -> Funcs -> Loc -> Ident -> [Value] -> Result
--- evalFunc store env funcs newloc ident argsValues = case Map.lookup ident funcs of
---   Just (Code args block) -> failure "evalFunc" -- todo
---   Just (BuiltIn _) -> evalPrint $ head argsValues
---   Nothing -> failure "evalFunc" -- this should never happen
-
--- evalPrint :: Value -> Result
--- evalPrint val = case val of
---   I x -> Right (I 0, show x)
---   S x -> Right (I 0, x)
---   B x -> Right (I 0, show x)
-
--- -- todo
--- -- makeLocalEnv :: [AbsGramatyka.Arg] -> [Value] -> Env
--- -- makeLocalEnv [] [] = Map.empty
--- -- makeLocalEnv (x:xs) (y:ys) = Map.insert (getArgName x) y $ makeLocalEnv xs ys -- todo: to nie obsługuje var arg
-
--- thrd :: (a, b, c) -> c
--- thrd (_, _, x) = x
-
--- discardSnd :: (a, b, c) -> (a, c)
--- discardSnd (x, _, z) = (x, z)
-
--- evalBlock :: Store -> Env -> Env -> Funcs -> Loc -> AbsGramatyka.Block -> (Store, Result)
--- evalBlock store env loaclEnv funcs newloc x = case x of
---   AbsGramatyka.Block _ stmts -> discardSnd $ evalStmts store env loaclEnv funcs newloc stmts
-
--- evalStmts :: Store -> Env -> Env -> Funcs -> Loc -> [AbsGramatyka.Stmt] -> (Store, Loc, Result)
--- evalStmts store _ _ _ newloc [] = (store, newloc, Right (Void, ""))
--- evalStmts store env localEnv funcs newloc (x:xs) = let
---   (store', newloc', res) = evalStmt store env localEnv funcs newloc x
---   in res >>+ evalStmts store' env localEnv funcs newloc' xs
-
--- (>>>) :: (Store, Loc, Result) -> (Store, Loc, Result) -> (Store, Loc, Result)
--- (>>>) (store, loc, res) (store', loc', res') = case res of
---   Left err -> (store, loc, Left err)
---   Right (_, output) -> (store', loc', output >+ res')
-
--- (>+) :: Output -> Result -> Result
--- (>+) output (Left err) = Left err
--- (>+) output (Right (v, output')) = Right (v, output ++ output')
-
--- (>>+) :: Result -> (Store, Loc, Result) -> (Store, Loc, Result)
--- (>>+) (Left err) _ = (Map.empty, 0, Left err)
--- (>>+) (Right (v, output)) (store', loc', res') = (store', loc', output >+ res')
-
--- (>>+=) :: Result -> ((Value, Output) -> (Store, Loc, Result)) -> (Store, Loc, Result)
--- (>>+=) (Left err) _ = (Map.empty, 0, Left err)
--- (>>+=) (Right r) lambda = lambda r
-
--- (+>>) :: Output -> (Store, Loc, Result) -> (Store, Loc, Result)
--- (+>>) output (store', loc', res') = case res' of
---   Left err -> (Map.empty, 0, Left err)
---   Right (v, output') -> (store', loc', Right (v, output ++ output'))
-
--- evalStmt :: Store -> Env -> Env -> Funcs -> Loc -> AbsGramatyka.Stmt -> (Store, Loc, Result)
--- evalStmt store env localEnv funcs newloc x = case x of
---   AbsGramatyka.Empty _ -> (store, newloc, Right (Void, ""))
---   AbsGramatyka.BStmt _ block -> let
---     (store', res) = evalBlock store env localEnv funcs newloc block
---     in (store', newloc, res)
---   AbsGramatyka.Decl pos type_ item -> (store, newloc, Right (Void, "")) -- todo: deklaracja zmienia env (sic!)
---   AbsGramatyka.Ass pos ident expr -> (store, newloc, Right (Void, "")) -- todo
---   AbsGramatyka.Ret pos expr -> (store, newloc, Right (Void, "")) -- todo
---   AbsGramatyka.Cond pos expr stmt -> let
---     (store', res) = evalExpr store env localEnv funcs expr
---     in res >>+= \(B b, output) -> if b then output +>> evalStmt store' env localEnv funcs newloc stmt else (store', newloc, Right (Void, output))
---   AbsGramatyka.CondElse pos expr stmt1 stmt2 -> let
---     (store', res) = evalExpr store env localEnv funcs expr
---     in res >>+= \(B b, output) -> if b then output +>> evalStmt store' env localEnv funcs newloc stmt1 else output +>> evalStmt store' env localEnv funcs newloc stmt2
---   AbsGramatyka.While pos expr stmt -> let
---     (store', res) = evalExpr store env localEnv funcs expr
---     in res >>+= \(B b, output) -> if b then output +>> evalStmts store' env localEnv funcs newloc [stmt, AbsGramatyka.While pos expr stmt] else (store', newloc, Right (Void, output))
---   AbsGramatyka.SExp _ expr -> let
---     (store', res) = evalExpr store env localEnv funcs expr
---     in (store', newloc, res)
 
 
 -- -- evalItem :: Env -> Funcs -> AbsGramatyka.Item -> Result
