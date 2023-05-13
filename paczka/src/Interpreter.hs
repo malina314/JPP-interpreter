@@ -50,11 +50,12 @@ run p s =
         Right r -> do
           putStrLn $ "Type checking successful!" -- todo: remove
           case eval tree of
-            Left err -> do
+            Left (err, output) -> do
+              putStrLn output
               putStrLn "Evaluation failed!"
               putStrLn err
               showTree tree
-            Right (_, output) -> do
+            Right (_, _, _, _, _, v, output) -> do
               putStrLn $ "Evaluation successful!" -- todo: remove
               putStr $ output
               putStr $ "\n" -- todo: remove

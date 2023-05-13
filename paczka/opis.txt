@@ -24,6 +24,9 @@ Są dostępne predefiniowane funkcje:
 int printInt(int)
 int printString(string)
 int printBool(bool)
+int printLnInt(int)
+int printLnString(string)
+int printLnBool(bool)
 
 Konflikty
 Gramatyka zawiera jeden konflikt typu shift-reduce związany z instrukcją if-else. W przypadku konfliktu parser wykonuje shift, co oznacza, że else łączy się z najbliższym if.
