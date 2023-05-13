@@ -2,8 +2,9 @@ module Eval (eval) where
 
 import qualified AbsGramatyka
 import qualified Data.Map as Map
+import qualified Data.List as List
 
-data Value = I Integer | S String | B Bool | Void | Return Value
+data Value = I Integer | S String | B Bool | Void | Return Value | List [Value]
   deriving (Eq, Show)
 
 data FuncBody = Code [AbsGramatyka.Arg] AbsGramatyka.Block | BuiltIn String
@@ -221,7 +222,10 @@ evalExpr (store, env, localEnv, funcs, newloc, v, output) x = case x of
   AbsGramatyka.ELitInt _ integer -> Right (store, env, localEnv, funcs, newloc, I integer, output)
   AbsGramatyka.ELitTrue _ -> Right (store, env, localEnv, funcs, newloc, B True, output)
   AbsGramatyka.ELitFalse _ -> Right (store, env, localEnv, funcs, newloc, B False, output)
-  AbsGramatyka.EApp _ ident exprs -> failure x
+  AbsGramatyka.EApp _ ident exprs -> evalExprs (store, env, localEnv, funcs, newloc, v, output) exprs >>=
+    \(store', env', localEnv', funcs', newloc', List argsVals, output') -> let
+      funcName = getIdentName ident
+      in evalFunc (store', env', localEnv', funcs', newloc', Void, output') funcName argsVals
   AbsGramatyka.EString _ string -> Right (store, env, localEnv, funcs, newloc, S string, output)
   AbsGramatyka.Neg _ expr -> evalExpr (store, env, localEnv, funcs, newloc, v, output) expr >>=
     \(store', env', localEnv', funcs', newloc', I n, output') -> Right (store', env', localEnv', funcs', newloc', I (-n), output')
@@ -255,3 +259,13 @@ evalExpr (store, env, localEnv, funcs, newloc, v, output) x = case x of
     \(store', env', localEnv', funcs', newloc', B b1, output') ->
       if b1 then Right (store', env', localEnv', funcs', newloc', B True, output')
       else evalExpr (store', env', localEnv', funcs', newloc', v, output') expr2
+  
+evalExprs :: Memory -> [AbsGramatyka.Expr] -> Result
+evalExprs mem [] = let
+  (store, env, localEnv, funcs, newloc, _, output) = mem
+  in Right (store, env, localEnv, funcs, newloc, List [], output)
+evalExprs mem (x:xs) = evalExpr mem x >>= \mem' -> let
+  (_, _, _, _, _, v, _) = mem'
+  res = evalExprs mem' xs
+  in res >>= \(store', env', localEnv', funcs', newloc', List v', output') ->
+    Right (store', env', localEnv', funcs', newloc', List (v : v'), output')
