@@ -184,15 +184,21 @@ evalStmt store env localEnv funcs newloc x = case x of
   AbsGramatyka.BStmt _ block -> let
     (store', res) = evalBlock store env localEnv funcs newloc block
     in (store', newloc, res)
-  AbsGramatyka.Decl pos type_ item -> (store, newloc, Right (Void, "")) -- todo
+  AbsGramatyka.Decl pos type_ item -> (store, newloc, Right (Void, "")) -- todo: deklaracja zmienia env (sic!)
   AbsGramatyka.Ass pos ident expr -> (store, newloc, Right (Void, "")) -- todo
   AbsGramatyka.Ret pos expr -> (store, newloc, Right (Void, "")) -- todo
   AbsGramatyka.Cond pos expr stmt -> let
     (store', res) = evalExpr store env localEnv funcs expr
     in res >>+= \(B b, output) -> if b then output +>> evalStmt store' env localEnv funcs newloc stmt else (store', newloc, Right (Void, output))
-  AbsGramatyka.CondElse pos expr stmt1 stmt2 ->(store, newloc, Right (Void, "")) -- todo
-  AbsGramatyka.While pos expr stmt ->(store, newloc, Right (Void, "")) -- todo
-  AbsGramatyka.SExp _ expr ->(store, newloc, Right (Void, "")) -- todo
+  AbsGramatyka.CondElse pos expr stmt1 stmt2 -> let
+    (store', res) = evalExpr store env localEnv funcs expr
+    in res >>+= \(B b, output) -> if b then output +>> evalStmt store' env localEnv funcs newloc stmt1 else output +>> evalStmt store' env localEnv funcs newloc stmt2
+  AbsGramatyka.While pos expr stmt -> let
+    (store', res) = evalExpr store env localEnv funcs expr
+    in res >>+= \(B b, output) -> if b then output +>> evalStmts store' env localEnv funcs newloc [stmt, AbsGramatyka.While pos expr stmt] else (store', newloc, Right (Void, output))
+  AbsGramatyka.SExp _ expr -> let
+    (store', res) = evalExpr store env localEnv funcs expr
+    in (store', newloc, res)
 
 
 -- evalItem :: Env -> Funcs -> AbsGramatyka.Item -> Result
