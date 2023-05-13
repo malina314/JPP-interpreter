@@ -35,3 +35,7 @@ Zmiany
 - usunięto produkcję VRet
 - stringi są nieporównywalne
 - identyfikator `__return_type__` jest zarezerwowany (BNFC nie parsuje identyfikatorów zaczynających się od podłogi)
+
+Uwagi:
+- zmienna może sie nazywać tak samo jak funkcja
+- output wypisuje się na końcu programu, więc w przypadku błedu wykonania nie wypisuje się nic na stdout
