@@ -3,7 +3,7 @@ module Eval (eval) where
 import qualified AbsGramatyka
 import qualified Data.Map as Map
 
-data Value = I Int | S String | B Bool | Void | Return Value
+data Value = I Integer | S String | B Bool | Void | Return Value
   deriving (Eq, Show)
 
 data FuncBody = Code [AbsGramatyka.Arg] AbsGramatyka.Block | BuiltIn String
@@ -58,6 +58,10 @@ getVarLoc ident env localEnv = case Map.lookup ident localEnv of
   Just loc -> loc
   Nothing -> case Map.lookup ident env of
     Just loc -> loc
+
+getValue :: Loc -> Store -> Value
+getValue loc store = case Map.lookup loc store of
+  Just val -> val
 
 defaultVal :: AbsGramatyka.Type -> Value
 defaultVal x = case x of
@@ -212,94 +216,42 @@ evalItem mem default_ x = case x of
     in Right (store', env, localEnv', funcs, newloc', Void, output)
 
 evalExpr :: Memory -> AbsGramatyka.Expr -> Result
-evalExpr = undefined
-
-------------------------------------------------------------------------------------------------------------------------
-
-
-
--- -- evalItem :: Env -> Funcs -> AbsGramatyka.Item -> Result
--- -- evalItem env funcs x = case x of
--- --   AbsGramatyka.NoInit _ ident -> Right Void
--- --   AbsGramatyka.Init _ ident expr -> evalExpr env funcs expr
-
--- -- evalItemWithType :: Env -> Funcs -> a -> AbsGramatyka.Type -> AbsGramatyka.Item -> Result
--- -- evalItemWithType env funcs pos type_ item = let
--- --   t = mapType type_
--- --   in case evalItem env funcs item of
--- --   Left err -> Left err
--- --   Right Void -> Right t
--- --   Right t' -> if t' == t then Right t else Left $ "Type mismatch at " ++ show pos ++ ". Expected " ++ show type_ ++ ", got " ++ show t ++ " - [evalItemWithType]"
-
--- -- evalIdentWithType :: a -> AbsGramatyka.Ident -> Type -> Env -> Result
--- -- evalIdentWithType pos x type_ env = case Map.lookup x env of
--- --     Nothing -> Left $ "Undeclared variable " ++ show x ++ " at " ++ show pos ++ " - [evalIdentWithType@1]"
--- --     Just t -> if t == type_ then Right Void else Left $ "Type mismatch at " ++ show pos ++ ". Expected " ++ show t ++ ", got " ++ show type_ ++ " - [evalIdentWithType@2]"
-
--- -- mapType :: AbsGramatyka.Type -> Type
--- -- mapType x = case x of
--- --   AbsGramatyka.Int _ -> Int
--- --   AbsGramatyka.Str _ -> Str
--- --   AbsGramatyka.Bool _ -> Bool
-
--- evalExpr :: Store -> Env -> Env -> Funcs -> AbsGramatyka.Expr -> (Store, Result)
--- evalExpr store env localEnv funcs x = (Map.empty, failure "evalExpr")
-
--- -- evalExpr :: Env -> Funcs -> AbsGramatyka.Expr -> Result
--- -- evalExpr env funcs x = case x of
--- --   AbsGramatyka.EVar _ ident -> case Map.lookup ident env of
--- --     Nothing -> Left $ "Undeclared variable " ++ show ident ++ " at " ++ show x ++ " - [evalExpr]"
--- --     Just t -> Right t
--- --   AbsGramatyka.ELitInt _ integer -> Right Int
--- --   AbsGramatyka.ELitTrue _ -> Right Bool
--- --   AbsGramatyka.ELitFalse _ -> Right Bool
--- --   AbsGramatyka.EApp pos ident exprs -> evalApp env funcs pos ident exprs
--- --   AbsGramatyka.EString _ string -> Right Str
--- --   AbsGramatyka.Neg pos expr -> evalExprWithType env funcs pos Int expr
--- --   AbsGramatyka.Not pos expr -> evalExprWithType env funcs pos Bool expr
--- --   AbsGramatyka.EMul pos expr1 mulop expr2 -> evalBinaryIntOp env funcs pos expr1 expr2
--- --   AbsGramatyka.EAdd pos expr1 addop expr2 -> evalBinaryIntOp env funcs pos expr1 expr2
--- --   AbsGramatyka.ERel pos expr1 relop expr2 -> evalBinaryRelOp env funcs pos expr1 expr2
--- --   AbsGramatyka.EAnd pos expr1 expr2 -> evalBinaryBoolOp env funcs pos expr1 expr2
--- --   AbsGramatyka.EOr pos expr1 expr2 -> evalBinaryBoolOp env funcs pos expr1 expr2
-
--- -- evalApp :: Env -> Funcs -> a -> AbsGramatyka.Ident -> [AbsGramatyka.Expr] -> Result
--- -- evalApp env funcs pos ident exprs = case Map.lookup ident funcs of
--- --   Nothing -> Left $ "Undeclared function " ++ show ident ++ " at " ++ show pos
--- --   Just (type_, args) -> if length args == length exprs then
--- --     case foldResults $ map (\(arg, expr) -> evalExprWithType env funcs pos arg expr) $ zip args exprs of
--- --       Left err -> Left err
--- --       Right _ -> Right type_
--- --   else Left $ "Wrong number of arguments at " ++ show pos ++ ". Expected " ++ show (length args) ++ ", got " ++ show (length exprs) ++ " - [evalApp]"
-
--- -- evalExprWithType :: Env -> Funcs -> a -> Type -> AbsGramatyka.Expr -> Result
--- -- evalExprWithType env funcs pos type_ expr = case evalExpr env funcs expr of
--- --   Left err -> Left err
--- --   Right t -> if t == type_ then Right t else Left $ "Type mismatch at " ++ show pos ++ ". Expected " ++ show type_ ++ ", got " ++ show t ++ " - [evalExprWithType]"
-
--- -- evalBinaryIntOp :: Env -> Funcs -> a -> AbsGramatyka.Expr -> AbsGramatyka.Expr -> Result
--- -- evalBinaryIntOp env funcs pos expr1 expr2 = case evalExpr env funcs expr1 of
--- --     Left err -> Left err
--- --     Right t -> if t == Int then
--- --       case evalExpr env funcs expr2 of
--- --         Left err -> Left err
--- --         Right t -> if t == Int then Right Int else Left $ "Type mismatch at " ++ show pos ++ " expected Int, got " ++ show t ++ " - [evalBinaryIntOp@1]"
--- --     else Left $ "Type mismatch at " ++ show pos ++ " expected Int, got " ++ show t ++ " - [evalBinaryIntOp@2]"
-
--- -- evalBinaryRelOp :: Env -> Funcs -> a -> AbsGramatyka.Expr -> AbsGramatyka.Expr -> Result
--- -- evalBinaryRelOp env funcs pos expr1 expr2 = case evalExpr env funcs expr1 of
--- --     Left err -> Left err
--- --     Right t -> if t == Int then
--- --       case evalExpr env funcs expr2 of
--- --         Left err -> Left err
--- --         Right t -> if t == Int then Right Bool else Left $ "Type mismatch at " ++ show pos ++ " expected Int, got " ++ show t ++ " - [evalBinaryRelOp@1]"
--- --     else Left $ "Type mismatch at " ++ show pos ++ " expected Int, got " ++ show t ++ " - [evalBinaryRelOp@2]"
-
--- -- evalBinaryBoolOp :: Env -> Funcs -> a -> AbsGramatyka.Expr -> AbsGramatyka.Expr -> Result
--- -- evalBinaryBoolOp env funcs pos expr1 expr2 = case evalExpr env funcs expr1 of
--- --     Left err -> Left err
--- --     Right t -> if t == Bool then
--- --       case evalExpr env funcs expr2 of
--- --         Left err -> Left err
--- --         Right t -> if t == Bool then Right Bool else Left $ "Type mismatch at " ++ show pos ++ " expected Bool, got " ++ show t ++ " - [evalBinaryBoolOp@1]"
--- --     else Left $ "Type mismatch at " ++ show pos ++ " expected Bool, got " ++ show t ++ " - [evalBinaryBoolOp@2]"
+evalExpr (store, env, localEnv, funcs, newloc, v, output) x = case x of
+  AbsGramatyka.EVar _ ident -> Right (store, env, localEnv, funcs, newloc, getValue (getIdentLoc ident env localEnv) store, output)
+  AbsGramatyka.ELitInt _ integer -> Right (store, env, localEnv, funcs, newloc, I integer, output)
+  AbsGramatyka.ELitTrue _ -> Right (store, env, localEnv, funcs, newloc, B True, output)
+  AbsGramatyka.ELitFalse _ -> Right (store, env, localEnv, funcs, newloc, B False, output)
+  AbsGramatyka.EApp _ ident exprs -> failure x
+  AbsGramatyka.EString _ string -> Right (store, env, localEnv, funcs, newloc, S string, output)
+  AbsGramatyka.Neg _ expr -> evalExpr (store, env, localEnv, funcs, newloc, v, output) expr >>=
+    \(store', env', localEnv', funcs', newloc', I n, output') -> Right (store', env', localEnv', funcs', newloc', I (-n), output')
+  AbsGramatyka.Not _ expr -> evalExpr (store, env, localEnv, funcs, newloc, v, output) expr >>=
+    \(store', env', localEnv', funcs', newloc', B b, output') -> Right (store', env', localEnv', funcs', newloc', B (not b), output')
+  AbsGramatyka.EMul _ expr1 mulop expr2 -> evalExpr (store, env, localEnv, funcs, newloc, v, output) expr1 >>=
+    \mem -> let (_, _, _, _, _, I n1, _) = mem in evalExpr mem expr2 >>= \(store', env', localEnv', funcs', newloc', I n2, output') ->
+    case mulop of
+      AbsGramatyka.Times _ -> Right (store', env', localEnv', funcs', newloc', I (n1 * n2), output')
+      AbsGramatyka.Div _ -> Right (store', env', localEnv', funcs', newloc', I (n1 `div` n2), output')
+      AbsGramatyka.Mod _ -> Right (store', env', localEnv', funcs', newloc', I (n1 `mod` n2), output')
+  AbsGramatyka.EAdd _ expr1 addop expr2 -> evalExpr (store, env, localEnv, funcs, newloc, v, output) expr1 >>=
+    \mem -> let (_, _, _, _, _, I n1, _) = mem in evalExpr mem expr2 >>= \(store', env', localEnv', funcs', newloc', I n2, output') ->
+    case addop of
+      AbsGramatyka.Plus _ -> Right (store', env', localEnv', funcs', newloc', I (n1 + n2), output')
+      AbsGramatyka.Minus _ -> Right (store', env', localEnv', funcs', newloc', I (n1 - n2), output')
+  AbsGramatyka.ERel _ expr1 relop expr2 -> evalExpr (store, env, localEnv, funcs, newloc, v, output) expr1 >>=
+    \mem -> let (_, _, _, _, _, I n1, _) = mem in evalExpr mem expr2 >>= \(store', env', localEnv', funcs', newloc', I n2, output') ->
+    case relop of
+      AbsGramatyka.LTH _ -> Right (store', env', localEnv', funcs', newloc', B (n1 < n2), output')
+      AbsGramatyka.LE _ -> Right (store', env', localEnv', funcs', newloc', B (n1 <= n2), output')
+      AbsGramatyka.GTH _ -> Right (store', env', localEnv', funcs', newloc', B (n1 > n2), output')
+      AbsGramatyka.GE _ -> Right (store', env', localEnv', funcs', newloc', B (n1 >= n2), output')
+      AbsGramatyka.EQU _ -> Right (store', env', localEnv', funcs', newloc', B (n1 == n2), output')
+      AbsGramatyka.NE _ -> Right (store', env', localEnv', funcs', newloc', B (n1 /= n2), output')
+  AbsGramatyka.EAnd _ expr1 expr2 -> evalExpr (store, env, localEnv, funcs, newloc, v, output) expr1 >>=
+    \(store', env', localEnv', funcs', newloc', B b1, output') ->
+      if b1 then evalExpr (store', env', localEnv', funcs', newloc', v, output') expr2
+      else Right (store', env', localEnv', funcs', newloc', B False, output')
+  AbsGramatyka.EOr _ expr1 expr2 -> evalExpr (store, env, localEnv, funcs, newloc, v, output) expr1 >>=
+    \(store', env', localEnv', funcs', newloc', B b1, output') ->
+      if b1 then Right (store', env', localEnv', funcs', newloc', B True, output')
+      else evalExpr (store', env', localEnv', funcs', newloc', v, output') expr2
