@@ -1,4 +1,3 @@
 int main() {
-    printInt(1);
-    // return 1 / 0;
+    while (false) 1;
 }
