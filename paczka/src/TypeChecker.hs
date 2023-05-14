@@ -37,7 +37,32 @@ checkProgram x = case x of
     env = typeGlobalVars topdefs Map.empty
     funcs = typeFuncs topdefs
     funcs' = addBuiltIn funcs
-    in checkMain funcs' >>= \_ -> foldResults $ map (checkTopDef env funcs') topdefs
+    funcNames = map getFuncName $ filter isFunc topdefs
+    in checkMain funcs' >>=
+      \_ -> checkFuncRedeclaration funcNames >>=
+      \_ -> checkBuiltInFuncRedeclaration funcNames >>=
+      \_ -> foldResults $ map (checkTopDef env funcs') topdefs
+
+isFunc :: Show a => AbsGramatyka.TopDef' a -> Bool
+isFunc x = case x of
+  AbsGramatyka.VarDef _ _ _ -> False
+  AbsGramatyka.FnDef _ _ _ _ _ -> True
+
+getFuncName :: Show a => AbsGramatyka.TopDef' a -> String
+getFuncName x = case x of
+  AbsGramatyka.FnDef _ _ (AbsGramatyka.Ident name) _ _ -> name
+
+checkFuncRedeclaration :: [String] -> Result
+checkFuncRedeclaration names = case findDup names of
+  Just name -> Left $ "Function " ++ show name ++ " redeclared"
+  Nothing -> Right Void
+
+checkBuiltInFuncRedeclaration :: [String] -> Result
+checkBuiltInFuncRedeclaration names = let
+  n = length names
+  builtIn = ["printInt", "printString", "printBool", "printLnInt", "printLnString", "printLnBool"]
+  m = length $ names List.\\ builtIn
+  in if n == m then Right Void else Left "Built-in function redeclared"
 
 addBuiltIn :: Funcs -> Funcs
 addBuiltIn funcs = let
@@ -51,7 +76,7 @@ checkMain funcs = case Map.lookup (AbsGramatyka.Ident "main") funcs of
 
 typeGlobalVars :: Show a => [AbsGramatyka.TopDef' a] -> Env -> Env
 typeGlobalVars [] env = env
-typeGlobalVars (x:xs) env = typeGlobalVars xs $ typeVar x env
+typeGlobalVars (x:xs) env = typeGlobalVars xs $ typeVar x env -- todo: redeklaracje nie są dozwolone
 
 typeVar :: Show a => AbsGramatyka.TopDef' a -> Env -> Env
 typeVar x env = case x of
@@ -68,7 +93,7 @@ typeFuncs [] = Map.empty
 typeFuncs (x:xs) = let
   funcs = typeFunc x
   funcs' = typeFuncs xs
-  in Map.union funcs funcs' -- todo: redeklaracje nie są dozwolone
+  in Map.union funcs funcs'
 
 getIdent :: Show a => AbsGramatyka.Item' a -> AbsGramatyka.Ident
 getIdent x = case x of
