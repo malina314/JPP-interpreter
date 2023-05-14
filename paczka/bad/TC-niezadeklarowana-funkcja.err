@@ -1,4 +1,4 @@
-bad/TC-niezadeklarowana-funkcja.jpp
+./bad/TC-niezadeklarowana-funkcja.jpp
 
 Parse Successful!
 Type checking failed!

@@ -93,3 +93,5 @@ Na 30 punktów
 ## Uwagi
 
 Interpreter wywołany z opcją `-v` wypisuje dodatkowe iformacje na `stderr`.
+
+Testy w katalogu `bad/` są uruchamiane z opcją `-v`, natomiast testy w katalogu `good/` bez.
