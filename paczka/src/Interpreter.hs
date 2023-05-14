@@ -14,7 +14,7 @@ import System.Environment ( getArgs )
 import System.Exit        ( exitFailure )
 import Control.Monad
 
-import AbsGramatyka   ()
+import AbsGramatyka   ( Program )
 import LexGramatyka   ( Token, mkPosToken )
 import ParGramatyka   ( pProgram, myLexer )
 import PrintGramatyka ( Print, printTree )
@@ -23,15 +23,15 @@ import SkelGramatyka  ()
 import TypeChecker
 import Eval
 
-type Err        = Either String
-type ParseFun a = [Token] -> Err a
+type Err      = Either String
+type ParseFun = [Token] -> Err AbsGramatyka.Program
 
 -- todo: annotate with type
 
--- runFile :: (Print a, Show a) => ParseFun a -> FilePath -> IO ()
+runFile :: ParseFun -> String -> IO ()
 runFile p f = putStrLn f >> readFile f >>= run p
 
--- run :: (Print a, Show a) => ParseFun a -> String -> IO ()
+run :: ParseFun -> String -> IO ()
 run p s =
   case p ts of
     Left err -> do

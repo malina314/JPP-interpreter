@@ -241,8 +241,8 @@ evalExpr (store, env, localEnv, funcs, newloc, v, output) x = case x of
     \mem -> let (_, _, _, _, _, I n1, _) = mem in evalExpr mem expr2 >>= \(store', env', localEnv', funcs', newloc', I n2, output') ->
     case mulop of
       AbsGramatyka.Times _ -> Right (store', env', localEnv', funcs', newloc', I (n1 * n2), output')
-      AbsGramatyka.Div _ -> Right (store', env', localEnv', funcs', newloc', I (n1 `div` n2), output')
-      AbsGramatyka.Mod _ -> Right (store', env', localEnv', funcs', newloc', I (n1 `mod` n2), output')
+      AbsGramatyka.Div pos -> if n2 == 0 then Left ("Runtime error: Divide by 0 at " ++ show pos, output) else Right (store', env', localEnv', funcs', newloc', I (n1 `div` n2), output')
+      AbsGramatyka.Mod pos -> if n2 == 0 then Left ("Runtime error: Divide by 0 at " ++ show pos, output) else Right (store', env', localEnv', funcs', newloc', I (n1 `mod` n2), output')
   AbsGramatyka.EAdd _ expr1 addop expr2 -> evalExpr (store, env, localEnv, funcs, newloc, v, output) expr1 >>=
     \mem -> let (_, _, _, _, _, I n1, _) = mem in evalExpr mem expr2 >>= \(store', env', localEnv', funcs', newloc', I n2, output') ->
     case addop of
