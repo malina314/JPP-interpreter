@@ -6,7 +6,7 @@ Projekt jest interpreterem języka imperatywnego. Składnia języka jest opisana
 
 ### Opis plików
 
-- `src/Interpreter.hs` - główny moduł interpretera, wczytuje plik z kodem źródłowym, parsuje go, sprawdza typowanie i wykonuje.
+- `src/Interpreter.hs` - główny moduł interpretera, wczytuje plik z kodem źródłowym, parsuje go, sprawdza typowanie i wykonuje. W dużej mierze oparty na kodzie z pliku `TestGramatyka.hs` generowanego przez BNFC.
 - `src/TypeChecker.hs` - moduł odpowiedzialny za statyczne sprawdzanie typów. Sprawdza także redeklaracje zmiennych globalnych, redeklaracje funkcji, redeklaracje parametrów funkcji, ilość argumentów funkcji w wywołaniu, obecność funkcji `main()`, czy używane zmienne i funkcje są zadeklarowane.
 - `src/Eval.hs` - moduł odpowiedzialny za wykonanie programu. Obsługuje błedy wykonania takie jak dzielenie przez 0.
 
