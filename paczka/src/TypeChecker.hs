@@ -38,9 +38,11 @@ checkProgram x = case x of
     funcs = typeFuncs topdefs
     funcs' = addBuiltIn funcs
     funcNames = map getFuncName $ filter isFunc topdefs
+    varNames = map getVarName $ filter isVar topdefs
     in checkMain funcs' >>=
       \_ -> checkFuncRedeclaration funcNames >>=
       \_ -> checkBuiltInFuncRedeclaration funcNames >>=
+      \_ -> checkVarRedeclaration varNames >>=
       \_ -> foldResults $ map (checkTopDef env funcs') topdefs
 
 isFunc :: Show a => AbsGramatyka.TopDef' a -> Bool
@@ -48,9 +50,19 @@ isFunc x = case x of
   AbsGramatyka.VarDef _ _ _ -> False
   AbsGramatyka.FnDef _ _ _ _ _ -> True
 
+isVar :: Show a => AbsGramatyka.TopDef' a -> Bool
+isVar x = case x of
+  AbsGramatyka.VarDef _ _ _ -> True
+  AbsGramatyka.FnDef _ _ _ _ _ -> False
+
 getFuncName :: Show a => AbsGramatyka.TopDef' a -> String
 getFuncName x = case x of
   AbsGramatyka.FnDef _ _ (AbsGramatyka.Ident name) _ _ -> name
+
+getVarName :: Show a => AbsGramatyka.TopDef' a -> String
+getVarName x = case x of
+  AbsGramatyka.VarDef _ _ item -> case getIdent item of
+    AbsGramatyka.Ident name -> name
 
 checkFuncRedeclaration :: [String] -> Result
 checkFuncRedeclaration names = case findDup names of
@@ -63,6 +75,11 @@ checkBuiltInFuncRedeclaration names = let
   builtIn = ["printInt", "printString", "printBool", "printLnInt", "printLnString", "printLnBool"]
   m = length $ names List.\\ builtIn
   in if n == m then Right Void else Left "Built-in function redeclared"
+
+checkVarRedeclaration :: [String] -> Result
+checkVarRedeclaration names = case findDup names of
+  Just name -> Left $ "Global variable " ++ show name ++ " redeclared"
+  Nothing -> Right Void
 
 addBuiltIn :: Funcs -> Funcs
 addBuiltIn funcs = let
