@@ -202,7 +202,7 @@ checkItemWithType env funcs pos type_ item = let
   in case checkItem env funcs item of
   Left err -> Left err
   Right Void -> Right t
-  Right t' -> if t' == t then Right t else Left $ "Type mismatch at " ++ show pos ++ ". Expected " ++ show type_ ++ ", got " ++ show t ++ " - [checkItemWithType]"
+  Right t' -> if t' == t then Right t else Left $ "Type mismatch at " ++ show pos ++ ". Expected " ++ show t ++ ", got " ++ show t' ++ " - [checkItemWithType]"
 
 checkIdentWithType :: Show a => a -> AbsGramatyka.Ident -> Type -> Env -> Result
 checkIdentWithType pos x type_ env = case Map.lookup x env of
