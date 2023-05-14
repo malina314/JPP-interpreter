@@ -5,6 +5,7 @@
   04 (print) +
   05 (while, if) +
   06 (funkcje lub procedury, rekurencja) +
+  Jedna rzecz z poniższej listy lub coś o porównywalnej trudności:
   07 (przez zmienną / przez wartość / in/out) + (przez zmienną / przez wartość)
   08 (zmienne read-only i pętla for)
   Na 20 punktów

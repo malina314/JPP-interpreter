@@ -17,7 +17,7 @@ int fib(int n) {
 }
 
 int main() {
+    foo();
     printLnInt(fib(15));
-
-    return 0 + foo();
+    printLnString(bar(1, "Hello, world!", true));
 }

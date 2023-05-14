@@ -4,13 +4,13 @@ all: main
 
 main:
 	cd src && make
-	cp src/interpreter interpreter
+	ln -fs src/interpreter interpreter
 
 test:
 	./test.sh
 
 simple_test:
-	./interpreter good/simple
+	./interpreter ../tests/simple
 
 # todo: clean
 clean:

@@ -1,0 +1,43 @@
+int foo(var int a, var int b, var int c) {
+    b = a;
+    return b;
+}
+
+int bar(int a, int b, int c) {
+    b = a;
+    return b;
+}
+
+int foobar(int a, var int a1, int b, var int b1, int c, var int c1) {
+    a1 = a + 15;
+    b1 = b + 15;
+    c1 = c + 15;
+}
+
+int main() {
+    int a = 42;
+    int b = 0;
+    int c = 0;
+
+    printLnInt(b);
+    foo(var a, var b, var c);
+    printLnInt(b);
+    bar(50, b, c);
+    printLnInt(b);
+
+    a = 17;
+    b = 13;
+    c = 11;
+
+    printLnInt(a);
+    printLnInt(b);
+    printLnInt(c);
+
+    foobar(a, var a, b, var b, c, var c);
+
+    printLnInt(a);
+    printLnInt(b);
+    printLnInt(c);
+
+    return 0;
+}

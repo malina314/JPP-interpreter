@@ -1,0 +1,17 @@
+int foo() {
+    return 42;
+}
+
+string bar() {
+    return "Hello, world!";
+}
+
+bool baz() {
+    return true;
+}
+
+int main() {
+    printLnInt(foo());
+    printLnString(bar());
+    printLnBool(baz());
+}

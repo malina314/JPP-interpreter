@@ -1,0 +1,11 @@
+global int ga = 42;
+global bool gb = true;
+global string gc;
+
+int main() {
+    int a;
+    a = 5;
+    bool b = true;
+    string c = "Hello, world!";
+    c = "Goodbye, world!";
+}
