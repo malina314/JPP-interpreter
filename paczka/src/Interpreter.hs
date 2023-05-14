@@ -35,13 +35,13 @@ ePutStrV :: Verbosity -> String -> IO ()
 ePutStrV v s = when (v > 0) $ ePutStrLn s
 
 runFile :: Verbosity -> ParseFun -> String -> IO ()
-runFile v p f = putStrLn f >> readFile f >>= run v p
+runFile v p f = ePutStrV v f >> readFile f >>= run v p
 
 run :: Verbosity -> ParseFun -> String -> IO ()
 run v p s =
   case p ts of
     Left err -> do
-      ePutStrLn "\nParse Failed!\n"
+      ePutStrLn "Parse Failed!\n"
       ePutStrLn "Tokens:"
       mapM_ (ePutStrLn . showPosToken . mkPosToken) ts
       ePutStrLn err
@@ -56,14 +56,14 @@ run v p s =
           ePutStrV v "Type checking successful!"
           case eval tree of
             Left (err, output) -> do
-              putStrLn output
-              putStrLn "Evaluation failed!"
-              putStrLn err
+              putStr output
+              ePutStrLn "Evaluation failed!"
+              ePutStrLn err
               showTree v tree
             Right (_, _, _, _, _, I mainRet, output) -> do
               ePutStrV v "Evaluation successful!"
               ePutStrV v $ "Main returned: " ++ show mainRet
-              putStr $ output
+              putStr output
   where
   ts = myLexer s
   showPosToken ((l,c),t) = concat [ show l, ":", show c, "\t", show t ]
