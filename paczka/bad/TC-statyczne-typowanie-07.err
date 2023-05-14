@@ -1,0 +1,21 @@
+bad/TC-statyczne-typowanie-07.jpp
+
+Parse Successful!
+Type checking failed!
+Type mismatch at Just (2,5). Expected Int, got Bool - [checkExprWithType]
+
+[Abstract Syntax]
+
+Program (Just (1,1)) [FnDef (Just (1,1)) (Int (Just (1,1))) (Ident "foo") [Arg (Just (1,9)) (Bool (Just (1,9))) (Ident "b")] (Block (Just (1,17)) [Ret (Just (2,5)) (EVar (Just (2,12)) (Ident "b"))]),FnDef (Just (5,1)) (Int (Just (5,1))) (Ident "main") [] (Block (Just (5,12)) [SExp (Just (6,5)) (EApp (Just (6,5)) (Ident "foo") [ELitInt (Just (6,9)) 42])])]
+
+[Linearized tree]
+
+int foo (bool b)
+{
+  return b;
+}
+int main ()
+{
+  foo (42);
+}
+

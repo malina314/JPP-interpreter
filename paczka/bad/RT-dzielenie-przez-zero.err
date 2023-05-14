@@ -1,0 +1,18 @@
+bad/RT-dzielenie-przez-zero.jpp
+
+Parse Successful!
+Type checking successful!
+Evaluation failed!
+Runtime error: Divide by 0 at Just (2,14)
+
+[Abstract Syntax]
+
+Program (Just (1,1)) [FnDef (Just (1,1)) (Int (Just (1,1))) (Ident "main") [] (Block (Just (1,12)) [Ret (Just (2,5)) (EMul (Just (2,12)) (ELitInt (Just (2,12)) 1) (Div (Just (2,14))) (ELitInt (Just (2,16)) 0))])]
+
+[Linearized tree]
+
+int main ()
+{
+  return 1 / 0;
+}
+

@@ -1,0 +1,9 @@
+bad/SX-brak-{}.jpp
+Parse Failed!
+
+Tokens:
+1:1	"int"
+1:5	"main"
+1:9	"("
+1:10	")"
+syntax error at end of file

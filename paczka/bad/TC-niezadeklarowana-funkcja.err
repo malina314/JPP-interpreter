@@ -1,0 +1,17 @@
+bad/TC-niezadeklarowana-funkcja.jpp
+
+Parse Successful!
+Type checking failed!
+Undeclared function Ident "foo" at Just (2,12)
+
+[Abstract Syntax]
+
+Program (Just (1,1)) [FnDef (Just (1,1)) (Int (Just (1,1))) (Ident "main") [] (Block (Just (1,12)) [Ret (Just (2,5)) (EApp (Just (2,12)) (Ident "foo") [])])]
+
+[Linearized tree]
+
+int main ()
+{
+  return foo ();
+}
+

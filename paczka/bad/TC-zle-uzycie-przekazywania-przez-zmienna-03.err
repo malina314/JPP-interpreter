@@ -1,0 +1,22 @@
+bad/TC-zle-uzycie-przekazywania-przez-zmienna-03.jpp
+
+Parse Successful!
+Type checking failed!
+Type mismatch at Just (7,5). Expected Int, got Var Int - [checkExprWithType]
+
+[Abstract Syntax]
+
+Program (Just (1,1)) [FnDef (Just (1,1)) (Int (Just (1,1))) (Ident "foo") [Arg (Just (1,9)) (Int (Just (1,9))) (Ident "a")] (Block (Just (1,16)) [Ret (Just (2,5)) (EVar (Just (2,12)) (Ident "a"))]),FnDef (Just (5,1)) (Int (Just (5,1))) (Ident "main") [] (Block (Just (5,12)) [Decl (Just (6,5)) (Int (Just (6,5))) (Init (Just (6,9)) (Ident "a") (ELitInt (Just (6,13)) 5)),SExp (Just (7,5)) (EApp (Just (7,5)) (Ident "foo") [ERefVar (Just (7,9)) (Ident "a")])])]
+
+[Linearized tree]
+
+int foo (int a)
+{
+  return a;
+}
+int main ()
+{
+  int a = 5;
+  foo (var a);
+}
+

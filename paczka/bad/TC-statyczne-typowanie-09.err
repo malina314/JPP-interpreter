@@ -1,0 +1,18 @@
+bad/TC-statyczne-typowanie-09.jpp
+
+Parse Successful!
+Type checking failed!
+Type mismatch at Just (3,5). Expected Int, got Var Int - [checkItemWithType]
+
+[Abstract Syntax]
+
+Program (Just (1,1)) [FnDef (Just (1,1)) (Int (Just (1,1))) (Ident "main") [] (Block (Just (1,12)) [Decl (Just (2,5)) (Int (Just (2,5))) (NoInit (Just (2,9)) (Ident "a")),Decl (Just (3,5)) (Int (Just (3,5))) (Init (Just (3,9)) (Ident "b") (ERefVar (Just (3,13)) (Ident "a")))])]
+
+[Linearized tree]
+
+int main ()
+{
+  int a;
+  int b = var a;
+}
+

@@ -1,0 +1,13 @@
+bad/TC-brak-main.jpp
+
+Parse Successful!
+Type checking failed!
+No main function
+
+[Abstract Syntax]
+
+Program (Just (1,1)) [VarDef (Just (1,1)) (Int (Just (1,8))) (Init (Just (1,12)) (Ident "a") (EApp (Just (1,16)) (Ident "printInt") [ELitInt (Just (1,25)) 42]))]
+
+[Linearized tree]
+
+global int a = printInt (42);

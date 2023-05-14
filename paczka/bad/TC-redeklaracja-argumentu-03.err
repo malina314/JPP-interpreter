@@ -1,0 +1,19 @@
+bad/TC-redeklaracja-argumentu-03.jpp
+
+Parse Successful!
+Type checking failed!
+Duplicate argument: Ident "a"
+
+[Abstract Syntax]
+
+Program (Just (1,1)) [FnDef (Just (1,1)) (Int (Just (1,1))) (Ident "foo") [ArgVar (Just (1,9)) (Int (Just (1,13))) (Ident "a"),ArgVar (Just (1,20)) (Int (Just (1,24))) (Ident "a")] (Block (Just (1,31)) []),FnDef (Just (3,1)) (Int (Just (3,1))) (Ident "main") [] (Block (Just (3,12)) [])]
+
+[Linearized tree]
+
+int foo (var int a, var int a)
+{
+}
+int main ()
+{
+}
+
