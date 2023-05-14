@@ -1,0 +1,3 @@
+int main() {
+    int _a; // identyfikator zaczynający się od _ jest niedozwolony
+}
