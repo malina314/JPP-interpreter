@@ -2,7 +2,7 @@
 **/*.hi
 **/*.bak
 **/TestGramatyka
-interpreter
+[Ii]nterpreter
 src/BnfcParser/
 **/cabaltestdir/dist-newstyle/
 paczka/src/*.txt
@@ -10,6 +10,8 @@ paczka/src/*.x
 paczka/src/*.y
 paczka/src/*.info
 paczka/src/*.sh
-paczka/src/interpreter
+paczka/src/[Ii]nterpreter
 paczka/src/TestGramatyka*
 experiments/x
+release/mateusz_malinowski/src/[Ii]nterpreter
+release/unzipped/
