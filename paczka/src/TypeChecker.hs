@@ -4,7 +4,7 @@ import qualified AbsGramatyka
 import qualified Data.Map as Map
 import qualified Data.List as List
 
-data Type = Int | Str | Bool | Void | Func (Type, [Type])
+data Type = Int | Str | Bool | Void | Func (Type, [Type]) | Var Type
   deriving (Eq, Show)
 
 type ErrT = String
@@ -93,7 +93,7 @@ checkMain funcs = case Map.lookup (AbsGramatyka.Ident "main") funcs of
 
 typeGlobalVars :: Show a => [AbsGramatyka.TopDef' a] -> Env -> Env
 typeGlobalVars [] env = env
-typeGlobalVars (x:xs) env = typeGlobalVars xs $ typeVar x env -- todo: redeklaracje nie są dozwolone
+typeGlobalVars (x:xs) env = typeGlobalVars xs $ typeVar x env
 
 typeVar :: Show a => AbsGramatyka.TopDef' a -> Env -> Env
 typeVar x env = case x of
@@ -133,7 +133,7 @@ getFuncArgsTypes x = case x of
 getArgType :: Show a => AbsGramatyka.Arg' a -> Type
 getArgType x = case x of
   AbsGramatyka.Arg _ type_ ident -> mapType type_
-  AbsGramatyka.ArgVar _ type_ ident -> mapType type_
+  AbsGramatyka.ArgVar _ type_ ident -> Var $ mapType type_
 
 typeArg :: Show a => AbsGramatyka.Arg' a -> Env -> Env
 typeArg x env = case x of
@@ -222,7 +222,7 @@ checkExpr env funcs x = case x of
     Just t -> Right t
   AbsGramatyka.ERefVar _ ident -> case Map.lookup ident env of
     Nothing -> Left $ "Undeclared variable " ++ show ident ++ " at " ++ show x ++ " - [checkExpr@2]"
-    Just t -> Right t
+    Just t -> Right $ Var t
   AbsGramatyka.ELitInt _ integer -> Right Int
   AbsGramatyka.ELitTrue _ -> Right Bool
   AbsGramatyka.ELitFalse _ -> Right Bool
