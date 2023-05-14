@@ -2,7 +2,7 @@ all: interpreter
 
 interpreter:
 	cd src && make
-	ln -fs src/interpreter interpreter
+	ln -fs src/Interpreter interpreter
 
 test:
 	./test.sh
@@ -13,4 +13,4 @@ simple_test:
 
 clean:
 	cd src && make clean
-	rm -f interpreter src/interpreter src/TestGramatyka
+	rm -f interpreter src/Interpreter src/TestGramatyka
