@@ -1,0 +1,6 @@
+int a() {}
+
+global int a;
+
+int main() {
+}

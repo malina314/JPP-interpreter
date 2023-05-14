@@ -1,0 +1,14 @@
+global int a = foo() + b;
+
+int foo() {
+    printLnInt(a); // w momencie wywołania foo() zmienna a nie jest jeszcze zainicjalizowana więc ma wartość domyślną 0
+    printLnInt(b); // w momencie wywołania foo() zmienna b nie jest jeszcze zainicjalizowana więc ma wartość domyślną 0
+    return 123;
+}
+
+global int b = a + 777; // a jest już zainicjalizowana więc b = 123 + 777 = 900
+
+int main() {
+    printLnInt(a);
+    printLnInt(b);
+}

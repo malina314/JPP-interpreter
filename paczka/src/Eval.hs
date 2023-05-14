@@ -4,7 +4,7 @@ import qualified AbsGramatyka
 import qualified Data.Map as Map
 import qualified Data.List as List
 
-data Value = I Integer | S String | B Bool | Void | Return Value | List [Value] | Ref Loc
+data Value = I Integer | S String | B Bool | Void | Return Value | List [Value] | Ref Loc | Default
   deriving (Eq, Show)
 
 data FuncBody = Code AbsGramatyka.Type [AbsGramatyka.Arg] AbsGramatyka.Block | BuiltIn String
@@ -65,6 +65,7 @@ getVarLoc ident env localEnv = case Map.lookup ident localEnv of
 getValue :: Loc -> Store -> Value
 getValue loc store = case Map.lookup loc store of
   Just val -> val
+  Nothing -> Default
 
 defaultVal :: AbsGramatyka.Type -> Value
 defaultVal x = case x of
@@ -94,16 +95,16 @@ addBuiltIn funcs = let
   names = ["printInt", "printString", "printBool", "printLnInt", "printLnString", "printLnBool"]
   in Map.union funcs (Map.fromList $ map (\n -> (n, BuiltIn n)) names)
 
-mapVarsToLocs :: [AbsGramatyka.TopDef] -> Env -> Loc -> (Env, Loc)
-mapVarsToLocs [] env newloc = (env, newloc)
-mapVarsToLocs (x:xs) env newloc = let
-  (env', newloc') = mapVarToLoc x env newloc
-  in mapVarsToLocs xs env' newloc'
+mapVarsToLocs :: [AbsGramatyka.TopDef] -> Store -> Env -> Loc -> (Store, Env, Loc)
+mapVarsToLocs [] store env newloc = (store, env, newloc)
+mapVarsToLocs (x:xs) store env newloc = let
+  (store', env', newloc') = mapVarToLoc x store env newloc
+  in mapVarsToLocs xs store' env' newloc'
 
-mapVarToLoc :: AbsGramatyka.TopDef -> Env -> Loc -> (Env, Loc)
-mapVarToLoc x env newloc = case x of
-  AbsGramatyka.VarDef pos type_ item -> (Map.insert (getItemName item) newloc env, newloc + 1)
-  AbsGramatyka.FnDef _ _ _ _ _ -> (env, newloc)
+mapVarToLoc :: AbsGramatyka.TopDef -> Store -> Env -> Loc -> (Store, Env, Loc)
+mapVarToLoc x store env newloc = case x of
+  AbsGramatyka.VarDef pos type_ item -> (Map.insert newloc (defaultVal type_) store, Map.insert (getItemName item) newloc env, newloc + 1)
+  AbsGramatyka.FnDef _ _ _ _ _ -> (store, env, newloc)
 
 mapFuncsToCode :: [AbsGramatyka.TopDef] -> Funcs -> Funcs
 mapFuncsToCode [] funcs = funcs
@@ -147,10 +148,10 @@ makeLocalEnv (store, env, _, funcs, newloc, _, output) args argsVals = let
 evalProgram :: AbsGramatyka.Program -> Result
 evalProgram x = case x of
   AbsGramatyka.Program _ topdefs -> let
-    (env, newloc) = mapVarsToLocs topdefs Map.empty 0
+    (store, env, newloc) = mapVarsToLocs topdefs Map.empty Map.empty 0
     funcs = mapFuncsToCode topdefs Map.empty
     funcs' = addBuiltIn funcs
-    res = initVars (Map.empty, env, Map.empty, funcs', newloc, Void, "") topdefs
+    res = initVars (store, env, Map.empty, funcs', newloc, Void, "") topdefs
     in res >>= evalMain
 
 evalMain :: Memory -> Result

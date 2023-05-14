@@ -1,0 +1,12 @@
+int main() {
+    printLnInt(n);
+    if (n == 0) {
+        return 15;
+    }
+    else if (n > 1) {
+        n = n - 1;
+        return main();
+    }
+}
+
+global int n = main(); // wywołanie main() do inicjalizacji zmiennej jest dozwolone i następuje przed wywołaniem main() przez interpreter
