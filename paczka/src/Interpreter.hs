@@ -12,6 +12,7 @@ import Prelude
   )
 import System.Environment ( getArgs )
 import System.Exit        ( exitFailure )
+import System.IO          ( hPutStrLn, stderr )
 import Control.Monad
 
 import AbsGramatyka   ( Program )
@@ -20,53 +21,57 @@ import ParGramatyka   ( pProgram, myLexer )
 import PrintGramatyka ( Print, printTree )
 import SkelGramatyka  ()
 
-import TypeChecker
-import Eval
+import TypeChecker    ( checkTypes )
+import Eval           ( eval, Value(..) )
 
-type Err      = Either String
-type ParseFun = [Token] -> Err AbsGramatyka.Program
+type Err       = Either String
+type ParseFun  = [Token] -> Err AbsGramatyka.Program
+type Verbosity = Int
 
--- todo: annotate with type
+ePutStrLn :: String -> IO ()
+ePutStrLn s = hPutStrLn stderr s
 
-runFile :: ParseFun -> String -> IO ()
-runFile p f = putStrLn f >> readFile f >>= run p
+ePutStrV :: Verbosity -> String -> IO ()
+ePutStrV v s = when (v > 0) $ ePutStrLn s
 
-run :: ParseFun -> String -> IO ()
-run p s =
+runFile :: Verbosity -> ParseFun -> String -> IO ()
+runFile v p f = putStrLn f >> readFile f >>= run v p
+
+run :: Verbosity -> ParseFun -> String -> IO ()
+run v p s =
   case p ts of
     Left err -> do
-      putStrLn "\nParse              Failed...\n"
-      putStrLn "Tokens:"
-      mapM_ (putStrLn . showPosToken . mkPosToken) ts
-      putStrLn err
-      exitFailure
+      ePutStrLn "\nParse Failed!\n"
+      ePutStrLn "Tokens:"
+      mapM_ (ePutStrLn . showPosToken . mkPosToken) ts
+      ePutStrLn err
     Right tree -> do
-      putStrLn "\nParse Successful!" -- todo: remove
+      ePutStrV v "\nParse Successful!"
       case checkTypes tree of
         Left err -> do
-          putStrLn "Type checking failed!"
-          putStrLn err
-          showTree tree
+          ePutStrLn "Type checking failed!"
+          ePutStrLn err
+          showTree v tree
         Right r -> do
-          putStrLn $ "Type checking successful!" -- todo: remove
+          ePutStrV v "Type checking successful!"
           case eval tree of
             Left (err, output) -> do
               putStrLn output
               putStrLn "Evaluation failed!"
               putStrLn err
-              showTree tree
-            Right (_, _, _, _, _, v, output) -> do
-              putStrLn $ "Evaluation successful!" -- todo: remove
-              putStrLn $ "Main exit code: " ++ show v -- todo: remove
+              showTree v tree
+            Right (_, _, _, _, _, I mainRet, output) -> do
+              ePutStrV v "Evaluation successful!"
+              ePutStrV v $ "Main returned: " ++ show mainRet
               putStr $ output
-              putStr $ "\n" -- todo: remove
   where
   ts = myLexer s
   showPosToken ((l,c),t) = concat [ show l, ":", show c, "\t", show t ]
 
-showTree tree = do
-  putStrLn $ "\n[Abstract Syntax]\n\n" ++ show tree
-  putStrLn $ "\n[Linearized tree]\n\n" ++ printTree tree
+showTree :: (Show a, Print a) => Verbosity -> a -> IO ()
+showTree v tree = do
+  ePutStrV v $ "\n[Abstract Syntax]\n\n" ++ show tree
+  ePutStrV v $ "\n[Linearized tree]\n\n" ++ printTree tree
 
 usage :: IO ()
 usage = do
@@ -82,6 +87,7 @@ main = do
   args <- getArgs
   case args of
     ["--help"] -> usage
-    []         -> getContents >>= run pProgram
-    fs         -> mapM_ (runFile pProgram) fs
+    []         -> getContents >>= run 0 pProgram
+    "-v":fs    -> mapM_ (runFile 1 pProgram) fs
+    fs         -> mapM_ (runFile 0 pProgram) fs
 

@@ -1,4 +1,4 @@
-module Eval (eval) where
+module Eval where
 
 import qualified AbsGramatyka
 import qualified Data.Map as Map

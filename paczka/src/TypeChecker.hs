@@ -1,4 +1,4 @@
-module TypeChecker (checkTypes) where
+module TypeChecker where
 
 import qualified AbsGramatyka
 import qualified Data.Map as Map

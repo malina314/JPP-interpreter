@@ -17,7 +17,7 @@ echo "Testing type checking errors"
 for file in bad/TC-*
 do
     echo "Testing $file"
-    ./interpreter "$file" > /tmp/err
+    ./interpreter "$file" >/tmp/err 2>&1
     if [ $? -ne 0 ]; then
         echo "Error"
         exit 1
