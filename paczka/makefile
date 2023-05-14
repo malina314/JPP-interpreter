@@ -1,17 +1,16 @@
-CC = ghc
+all: interpreter
 
-all: main
-
-main:
+interpreter:
 	cd src && make
 	ln -fs src/interpreter interpreter
 
 test:
 	./test.sh
 
+# todo: remove in release
 simple_test:
 	./interpreter ../tests/simple
 
-# todo: clean
 clean:
-	rm -f *.o *.hi interpreter
+	cd src && make clean
+	rm -f interpreter
