@@ -1,0 +1,9 @@
+int main() {
+    printInt(42);
+    printBool(true);
+    printString("Hello World");
+    printLnInt(42);
+    printLnBool(true);
+    printLnString("Hello World");
+    return 0;    
+}

@@ -1,0 +1,19 @@
+./bad/TC-redeklaracja-funkcji-01.jpp
+
+Parse Successful!
+Type checking failed!
+Function "main" redeclared
+
+[Abstract Syntax]
+
+Program (Just (1,1)) [FnDef (Just (1,1)) (Int (Just (1,1))) (Ident "main") [] (Block (Just (1,12)) []),FnDef (Just (3,1)) (Int (Just (3,1))) (Ident "main") [] (Block (Just (3,12)) [])]
+
+[Linearized tree]
+
+int main ()
+{
+}
+int main ()
+{
+}
+

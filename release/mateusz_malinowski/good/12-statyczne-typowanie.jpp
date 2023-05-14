@@ -1,0 +1,2 @@
+int main() {} // jakby main miał zły typ zwracany to by nie przeszło
+// więcej testów w /bad

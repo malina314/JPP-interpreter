@@ -1,0 +1,22 @@
+./bad/SX-;-zamiast-,.jpp
+Parse Failed!
+
+Tokens:
+1:1	"int"
+1:5	"foo"
+1:8	"("
+1:9	"int"
+1:13	"a"
+1:14	";"
+1:16	"int"
+1:20	"b"
+1:21	")"
+1:23	"{"
+1:24	"}"
+3:1	"int"
+3:5	"main"
+3:9	"("
+3:10	")"
+3:12	"{"
+3:13	"}"
+syntax error at line 1, column 14 before `;'

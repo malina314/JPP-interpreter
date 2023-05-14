@@ -1,0 +1,3 @@
+int main() {
+    1 || false; // int nie może być użyty jako bool
+}

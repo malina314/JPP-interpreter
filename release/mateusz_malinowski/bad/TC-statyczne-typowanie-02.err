@@ -1,0 +1,16 @@
+./bad/TC-statyczne-typowanie-02.jpp
+
+Parse Successful!
+Type checking failed!
+Wrong main function type
+
+[Abstract Syntax]
+
+Program (Just (2,1)) [FnDef (Just (2,1)) (Str (Just (2,1))) (Ident "main") [] (Block (Just (2,15)) [])]
+
+[Linearized tree]
+
+string main ()
+{
+}
+

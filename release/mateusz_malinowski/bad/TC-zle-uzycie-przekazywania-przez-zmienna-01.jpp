@@ -1,0 +1,9 @@
+int foo(var int a) {
+    return a;
+}
+
+int main() {
+    int a;
+    foo(var a); // OK
+    foo(a); // zle
+}

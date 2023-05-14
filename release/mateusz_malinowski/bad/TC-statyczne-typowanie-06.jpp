@@ -1,0 +1,3 @@
+int main() {
+    true + "string"; // nie można dodawać bool do string
+}

@@ -1,0 +1,21 @@
+./bad/TC-zle-uzycie-przekazywania-przez-zmienna-05.jpp
+
+Parse Successful!
+Type checking failed!
+Type mismatch at Just (6,5). Expected Var Int, got Int - [checkExprWithType]
+
+[Abstract Syntax]
+
+Program (Just (1,1)) [FnDef (Just (1,1)) (Int (Just (1,1))) (Ident "foo") [ArgVar (Just (1,9)) (Int (Just (1,13))) (Ident "a")] (Block (Just (1,20)) [Ret (Just (2,5)) (EVar (Just (2,12)) (Ident "a"))]),FnDef (Just (5,1)) (Int (Just (5,1))) (Ident "main") [] (Block (Just (5,12)) [SExp (Just (6,5)) (EApp (Just (6,5)) (Ident "foo") [EAdd (Just (6,9)) (EAdd (Just (6,9)) (EAdd (Just (6,9)) (ELitInt (Just (6,9)) 1) (Plus (Just (6,11))) (EMul (Just (6,13)) (EMul (Just (6,13)) (EMul (Just (6,13)) (ELitInt (Just (6,13)) 2) (Times (Just (6,15))) (ELitInt (Just (6,17)) 3)) (Div (Just (6,19))) (ELitInt (Just (6,21)) 4)) (Mod (Just (6,23))) (ELitInt (Just (6,25)) 5))) (Plus (Just (6,27))) (ELitInt (Just (6,29)) 1)) (Plus (Just (6,31))) (EMul (Just (6,33)) (EMul (Just (6,33)) (EMul (Just (6,33)) (ELitInt (Just (6,33)) 2) (Times (Just (6,35))) (ELitInt (Just (6,37)) 3)) (Div (Just (6,39))) (ELitInt (Just (6,41)) 4)) (Mod (Just (6,43))) (ELitInt (Just (6,45)) 5))])])]
+
+[Linearized tree]
+
+int foo (var int a)
+{
+  return a;
+}
+int main ()
+{
+  foo (1 + 2 * 3 / 4 % 5 + 1 + 2 * 3 / 4 % 5);
+}
+

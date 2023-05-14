@@ -1,0 +1,14 @@
+global int a = foo() + b; // b jest inicjalizowana w foo() więc a = 123 + 777 = 900
+
+int foo() {
+    b = 123; // przypisujemy wartość zmiennej b
+    printLnInt(b);
+    return 777;
+}
+
+global int b = printLnInt(a); // b jest inicjalizowana po zainicjalizowaniu a, więc a = 900, a na b zostaje przypisana wartość zwrócona przez printLnInt(a) czyli 0
+
+int main() {
+    printLnInt(a); // a = 900
+    printLnInt(b); // b = 0
+}

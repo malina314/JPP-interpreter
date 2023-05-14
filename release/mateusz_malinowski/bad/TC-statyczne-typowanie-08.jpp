@@ -1,0 +1,7 @@
+int foo(var int a) {
+}
+
+int main() {
+    bool b = true;
+    foo(var b); // zły typ argumentu
+}

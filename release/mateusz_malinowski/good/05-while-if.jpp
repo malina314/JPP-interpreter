@@ -1,0 +1,14 @@
+int main() {
+    int a = 3;
+    while (a != 0) {
+        if (true)
+            if (false) {
+                printString("hello ");
+            }
+            else // nawiasy klamrowe są opcjonalne
+                printString("world ");
+        a = a - 1;
+    }
+    printLnString("!");
+    return 0;
+}
