@@ -1,0 +1,17 @@
+./bad/TC-niezadeklarowana-zmienna-01.jpp
+
+Parse Successful!
+Type checking failed!
+Undeclared variable Ident "a" at EVar (Just (2,12)) (Ident "a") - [checkExpr@1]
+
+[Abstract Syntax]
+
+Program (Just (1,1)) [FnDef (Just (1,1)) (Int (Just (1,1))) (Ident "main") [] (Block (Just (1,12)) [Ret (Just (2,5)) (EVar (Just (2,12)) (Ident "a"))])]
+
+[Linearized tree]
+
+int main ()
+{
+  return a;
+}
+
