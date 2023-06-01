@@ -1,0 +1,91 @@
+global int a = 1;
+global int b = 2;
+
+int printGlobalA() {
+    printLnInt(a);
+}
+
+int decreaseGlobalA() {
+    a = a - 1;
+}
+
+int getGlobalA() {
+    return a;
+}
+
+int setGlobalA(int x) {
+    a = x;
+}
+
+int foo() {
+    printLnString("--- foo:");
+
+    a = 3; // modifikujemy zmienną globalną
+
+    while (a > 0) {
+        int a = 123; // przełaniamy a z zewnatrz
+        printLnInt(a);
+
+        if (true) {
+            int a = 13; // przełaniamy a
+            printLnInt(a);
+        }
+
+        printLnInt(a);
+        a = a + 55; // modifikujemy lokalne a
+        printLnInt(a);
+
+        decreaseGlobalA();
+        printGlobalA();
+    }
+    printLnString("--- end of foo ---");
+}
+
+int bar(int a) {
+    printLnString("--- bar:");
+    printLnInt(a);
+
+    a = 333; // modifikujemy parametr
+    printLnInt(a);
+    printGlobalA();
+
+    foo();
+    printLnString("--- end of bar ---");
+}
+
+int main() {
+    bar(777);
+    foo();
+    bar(123);
+
+    {
+        int a = 1;
+        printLnInt(a);
+        bar(a);
+
+        {
+            int a = 2;
+            printLnInt(a);
+            bar(a);
+
+            setGlobalA(6);
+            bar(getGlobalA());
+
+            printLnInt(a);
+            printGlobalA();
+        }
+
+        printLnInt(a);
+        printGlobalA();
+    }
+
+    setGlobalA(55);
+    bar(getGlobalA());
+
+    printGlobalA();
+    printLnInt(a); // wypisujemy globalne a
+
+    setGlobalA(789);
+    printGlobalA();
+    printLnInt(a); // wypisujemy globalne a
+}
