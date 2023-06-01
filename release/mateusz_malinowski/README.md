@@ -95,3 +95,10 @@ Na 30 punktów
 Interpreter wywołany z opcją `-v` wypisuje dodatkowe iformacje na `stderr`.
 
 Testy w katalogu `bad/` są uruchamiane z opcją `-v`, natomiast testy w katalogu `good/` bez.
+
+## Zmiany w drugim terminie
+
+- zmieniono nazwę testu `good/09-przesłanianie-i-statyczne-wiązanie` na `good/09-przesłanianie-i-statyczne-wiązanie-01`
+- dodano testy `good/09-przesłanianie-i-statyczne-wiązanie-02`, `good/09-przesłanianie-i-statyczne-wiązanie-03`
+- zmieniono nazwę testu `bad/TC-niezadeklarowana-zmienna` na `bad/TC-niezadeklarowana-zmienna-01`
+- dodano testy `bad/TC-niezadeklarowana-zmienna-02`, `bad/TC-niezadeklarowana-zmienna-03`, `bad/TC-niezadeklarowana-zmienna-04`, `bad/TC-niezadeklarowana-zmienna-05`

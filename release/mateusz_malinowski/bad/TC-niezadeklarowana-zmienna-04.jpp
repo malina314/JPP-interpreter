@@ -1,0 +1,6 @@
+int main() {
+    while (a > 0) { // niezadeklarowana zmienna
+        int a = 15;
+        a = a - 1;
+    }
+}

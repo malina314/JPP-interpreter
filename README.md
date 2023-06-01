@@ -5,3 +5,5 @@ make                # build
 make test           # run tests
 make && make test   # build and run tests
 ```
+
+Main readme file is located in `paczka/README.md`.

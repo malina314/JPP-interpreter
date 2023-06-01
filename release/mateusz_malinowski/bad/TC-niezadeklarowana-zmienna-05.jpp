@@ -1,0 +1,8 @@
+int foo() {
+    return a; // niezadeklarowana zmienna
+}
+
+int main() {
+    int a = 15;
+    printLnInt(foo());
+}

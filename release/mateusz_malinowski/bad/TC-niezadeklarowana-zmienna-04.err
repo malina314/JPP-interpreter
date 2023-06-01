@@ -1,0 +1,21 @@
+./bad/TC-niezadeklarowana-zmienna-04.jpp
+
+Parse Successful!
+Type checking failed!
+Undeclared variable Ident "a" at EVar (Just (2,12)) (Ident "a") - [checkExpr@1]
+
+[Abstract Syntax]
+
+Program (Just (1,1)) [FnDef (Just (1,1)) (Int (Just (1,1))) (Ident "main") [] (Block (Just (1,12)) [While (Just (2,5)) (ERel (Just (2,12)) (EVar (Just (2,12)) (Ident "a")) (GTH (Just (2,14))) (ELitInt (Just (2,16)) 0)) (BStmt (Just (2,19)) (Block (Just (2,19)) [Decl (Just (3,9)) (Int (Just (3,9))) (Init (Just (3,13)) (Ident "a") (ELitInt (Just (3,17)) 15)),Ass (Just (4,9)) (Ident "a") (EAdd (Just (4,13)) (EVar (Just (4,13)) (Ident "a")) (Minus (Just (4,15))) (ELitInt (Just (4,17)) 1))]))])]
+
+[Linearized tree]
+
+int main ()
+{
+  while (a > 0)
+  {
+    int a = 15;
+    a = a - 1;
+  }
+}
+

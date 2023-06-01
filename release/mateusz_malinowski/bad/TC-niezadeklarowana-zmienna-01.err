@@ -1,4 +1,4 @@
-./bad/TC-niezadeklarowana-zmienna.jpp
+./bad/TC-niezadeklarowana-zmienna-01.jpp
 
 Parse Successful!
 Type checking failed!
